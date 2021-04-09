@@ -3,8 +3,12 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 import csv
+import os
 ### selenium setup
-chromedriver_path= '/Users/mdup/Documents/IT_projekty/Tym09_devs/chromedriver'
+
+# nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
+# cesta musi byt primo k .exe
+chromedriver_path= 'C:/Users/JachymDvorak/Documents/GitHub/Tym09_devs/chromedriver.exe'
 driver = webdriver.Chrome(chromedriver_path)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu
@@ -87,12 +91,9 @@ for i in range(len(propertyLinks)):
 
 #write to CSV
 keys = properties[0].keys()
-with open('bytysReality.csv', 'w', newline='')  as output_file:
+with open('bytysReality.csv', 'w', newline='', encoding = 'utf-8')  as output_file:
     dict_writer = csv.DictWriter(output_file, keys)
     dict_writer.writeheader()
     dict_writer.writerows(properties)
 
 driver.quit()
-
-
-
