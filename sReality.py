@@ -8,20 +8,24 @@ import os
 
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
-chromedriver_path= 'C:/Users/JachymDvorak/Documents/GitHub/Tym09_devs/chromedriver.exe'
-driver = webdriver.Chrome(chromedriver_path)
+chr_opts = Options()
+chr_opts.add_argument('--headless')
+chr_opts.add_argument('--no-sandbox')
+chr_opts.add_argument('--disable-dev-shm-usage')
+chromedriver_path= ''
+driver = webdriver.Chrome(chromedriver_path,options=chr_opts)
 ### parametry
-def najdi_parameter(parameter): #parameter = hodnota labelu
+def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
     try:
-        for el in page_soup.find('label' , string=parameter).next_sibling():
-            hodnotaParametru = hodnotaParametru + el.get_text()
+        for el in page_soup.find('label' , string=parameter).next_sibling(): # pro kazdy label najdi next siblink (hodnota)
+            hodnotaParametru = hodnotaParametru + el.get_text() # v nekterych pripadech je hodnota rozdelena v DOME do vice childu siblinku
             # pokud je X nebo fajka 
-            if 'icon-cross' in str(el): hodnotaParametru = 'N'
-            if 'icon-ok' in str(el):    hodnotaParametru = 'Y'
+            if 'icon-cross' in str(el): hodnotaParametru = 'N' 
+            if 'icon-ok' in str(el):    hodnotaParametru = 'Y' 
     except:
         hodnotaParametru= 'null'
-    #m22 fix
+    #m2 se zobrazovali jako m22, kvuli strukture DOMu, tak je odstranime
     if ((hodnotaParametru=='null') or (hodnotaParametru=='N') or (hodnotaParametru=='Y')): return hodnotaParametru
     elif ((parameter=='Lodžie:') or (parameter=='Užitná plocha:') or (parameter=='Plocha podlahová:') or (parameter=='Sklep:')): hodnotaParametru = hodnotaParametru[:-1]
     return hodnotaParametru
@@ -38,29 +42,28 @@ propertyLinks= []
 i=1
 while nextPageExists:
     #url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&cena-od=0&cena-do=2800000&&strana={}&bez-aukce=1'.format(i) 
-    url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&vlastnictvi=osobni&strana={}&bez-aukce=1'.format(i)
-    driver.get(url)
-    time.sleep(3)
-    page_source=driver.page_source
-    page_soup=BeautifulSoup(page_source,'lxml')
-    if page_soup.select('a.title'): # Pokud na stracne existuje
+    url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&vlastnictvi=osobni&strana={}&bez-aukce=1'.format(i) # Otevri URL hledani bytu
+    driver.get(url) # otevri v chromu url link
+    time.sleep(3) # pockej 3 vteriny
+    page_source=driver.page_source 
+    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky 
+    if page_soup.select('a.title'): # Pokud na stracne existuje a class="title" - nazev inzeratu obsahujici href na inzerat
         #Zescrapuj odkazy na nemovitosti
-        for link in page_soup.select('a.title'):
-            propertyLinks.append('https://sreality.cz'+link.get('href'))
+        for link in page_soup.select('a.title'): # projdi kazdy a.title
+            propertyLinks.append('https://sreality.cz'+link.get('href')) # uloz odkaz na inzerat 
         i=i+1
     else:
-        nextPageExists = False
+        nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
 
-#Remove duplicates
-propertyLinks = list( dict.fromkeys(propertyLinks) ) 
+propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
 
 ### setup
-properties = []
+properties = [] 
 # Přiřaď nemovitosti atribut
-for i in range(len(propertyLinks)):
+for i in range(len(propertyLinks)): # projdi kazdy link
     apart = {}
-    url = propertyLinks[i]
-    driver.get(url)
+    url = propertyLinks[i] 
+    driver.get(url) # otevry link
     time.sleep(2)
     page_source=driver.page_source
     page_soup=BeautifulSoup(page_source,'lxml')
