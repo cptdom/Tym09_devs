@@ -137,5 +137,5 @@ aparts = []
 properties = []
 for link in apart_links:
   aparts.append(scrape_apartment(link))
-aparts_df = pd.DataFrame(aparts)
+aparts_df = pd.DataFrame([a for a in aparts if a])
 aparts_df.to_csv("data/idnes_prague.csv")
