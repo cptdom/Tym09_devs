@@ -93,7 +93,12 @@ def scrape_apartment(apart_url):
   page_soup = BeautifulSoup(requests.get(apart_url).content, 'lxml')
 
   apart['url'] = apart_url
-  apart['title'] = page_soup.select_one('h1.b-detail__title > span').get_text()
+
+  title_elem = page_soup.select_one('h1.b-detail__title > span')
+  if not title_elem:
+    return None # apartment that went missing after scraping list of apartments
+
+  apart['title'] = title_elem.get_text()
   apart['address'] = page_soup.select_one('p.b-detail__info').get_text()
   apart['price'] = page_soup.select_one('p.b-detail__price > strong').get_text()
   apart['description'] = page_soup.select_one('div.b-desc > p').get_text()
@@ -134,4 +139,3 @@ for link in apart_links:
   aparts.append(scrape_apartment(link))
 aparts_df = pd.DataFrame(aparts)
 aparts_df.to_csv("data/idnes_prague.csv")
-# aparts_df.isnull().sum()
