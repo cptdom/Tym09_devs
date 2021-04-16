@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 import csv
-import os
+import os 
 ### selenium setup
 
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
@@ -21,12 +21,12 @@ def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
         for el in page_soup.find('label' , string=parameter).next_sibling(): # pro kazdy label najdi next siblink (hodnota)
             hodnotaParametru = hodnotaParametru + el.get_text() # v nekterych pripadech je hodnota rozdelena v DOME do vice childu siblinku
             # pokud je X nebo fajka 
-            if 'icon-cross' in str(el): hodnotaParametru = 'N' 
-            if 'icon-ok' in str(el):    hodnotaParametru = 'Y' 
+            if 'icon-cross' in str(el): hodnotaParametru = False
+            if 'icon-ok' in str(el):    hodnotaParametru = True
     except:
         hodnotaParametru= 'null'
     #m2 se zobrazovali jako m22, kvuli strukture DOMu, tak je odstranime
-    if ((hodnotaParametru=='null') or (hodnotaParametru=='N') or (hodnotaParametru=='Y')): return hodnotaParametru
+    if ((hodnotaParametru=='null') or (hodnotaParametru == False) or (hodnotaParametru == True)): return hodnotaParametru
     elif ((parameter=='Lodžie:') or (parameter=='Užitná plocha:') or (parameter=='Plocha podlahová:') or (parameter=='Sklep:')): hodnotaParametru = hodnotaParametru[:-1]
     return hodnotaParametru
 
@@ -68,28 +68,28 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     page_source=driver.page_source
     page_soup=BeautifulSoup(page_source,'lxml')
     apart['title'] =            page_soup.select_one('div.property-title > h1 > span > span').get_text()
-    apart['lokace'] =           page_soup.select_one('span.location-text').get_text()
-    apart['cena']=              page_soup.select_one('span.norm-price').get_text()
-    apart['uzitna_plocha'] =    najdi_parameter('Užitná plocha:')
-    apart['podlahova_plocha']=  najdi_parameter('Plocha podlahová:')
-    apart['stavba']=            najdi_parameter('Stavba:')
-    apart['stav_objektu'] =     najdi_parameter('Stav objektu:')
+    apart['address'] =          page_soup.select_one('span.location-text').get_text()
+    apart['area'] =             najdi_parameter('Užitná plocha:')
+    apart['floor_area']=        najdi_parameter('Plocha podlahová:')
+    apart['price']=             page_soup.select_one('span.norm-price').get_text()
+    apart['description'] =      zparsuj_popis() 
+    apart['basement'] =         najdi_parameter('Sklep:')
+    apart['building_type']=     najdi_parameter('Stavba:')
+    apart['penb'] =             najdi_parameter('Energetická náročnost budovy:')
+    apart['floor'] =            najdi_parameter('Podlaží:')
+    apart['state'] =            najdi_parameter('Stav objektu:')
+    apart['internet'] =         najdi_parameter('Telekomunikace:')
+    apart['equipment'] =        najdi_parameter('Vybavení:')
+    apart['elevator'] =         najdi_parameter('Výtah:')
+    apart['parking'] =          najdi_parameter('Parkování:')
+    apart['electricity'] =      najdi_parameter('Elektřina:')
+    apart['link'] =             propertyLinks[i]
+    apart['gas'] =              najdi_parameter('Plyn:')
+    apart['loggia'] =           najdi_parameter('Lodžie:')
     apart['umistneni_objektu'] =najdi_parameter('Umístění objektu:')
-    apart['podlazi'] =          najdi_parameter('Podlaží:')
-    apart['lodzie'] =           najdi_parameter('Lodžie:')
-    apart['sklep'] =            najdi_parameter('Sklep:')
-    apart['parkovani'] =        najdi_parameter('Parkování:')
-    apart['doprava'] =          najdi_parameter('Doprdddava:')
-    apart['energeticka_narocnost'] = najdi_parameter('Energetická náročnost budovy:')
-    apart['vybaveni'] =         najdi_parameter('Vybavení:')
-    apart['vytah'] =            najdi_parameter('Výtah:')
+    apart['doprava'] =          najdi_parameter('Doprava:')
     apart['voda'] =             najdi_parameter('Voda:')
-    apart['plyn'] =             najdi_parameter('Plyn:')
-    apart['elektrina'] =        najdi_parameter('Elektřina:')
     apart['odpad'] =            najdi_parameter('Odpad:')
-    apart['telekomunikace'] =   najdi_parameter('Telekomunikace:')
-    apart['popis'] =            zparsuj_popis() 
-    apart['url'] =              propertyLinks[i]
     properties.append(apart)
 
 #write to CSV
