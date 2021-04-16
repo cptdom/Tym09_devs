@@ -1,3 +1,4 @@
+import re
 import time
 
 import pandas as pd
@@ -107,9 +108,30 @@ def get_apartment_links(url, debug=False):
   return links
 
 
+def get_meters(row):
+  metraz = row.split(',')[-1].strip()
+  metry_cislo = re.search(r'\d+', metraz)
+  return int(metry_cislo.group(0)) if metry_cislo else ""
+
+
+def fix_price(row):
+  cut_currency = row.split(' ')[0]
+  return int(cut_currency.replace('.', ''))
+
+
+def clean_dataset(a_df):
+  a_df = a_df.dropna(subset=['price'])
+  a_df = a_df.drop(a_df.columns[[0]], axis=1)
+  a_df['area'] = a_df['area'].apply(get_meters)
+  a_df['price'] = a_df['price'].apply(fix_price)
+
+  return a_df
+
+
 aparts = []
 apart_links = get_apartment_links(MAIN_URL)
 for link in apart_links:
   aparts.append(scrape_apartment(link))
 aparts_df = pd.DataFrame(aparts)
+aparts_df = clean_dataset(aparts_df)
 aparts_df.to_csv("data/bezrealitky_prague.csv")

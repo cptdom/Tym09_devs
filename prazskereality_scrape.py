@@ -1,4 +1,4 @@
-import time
+import re
 
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -94,11 +94,53 @@ def count_features():
   return Counter(all_features)
 
 
+def fix_price(row):
+  cut_currency = row[:-3]
+  return cut_currency.replace('\xa0', '')
+
+
+def get_meters(row):
+  metraz = row.split(',')[-1].strip()
+  metry_cislo = re.search(r'\d+', metraz)
+  return int(metry_cislo.group(0)) if metry_cislo else ""
+
+
+def get_region(row):
+  if 'Praha' in str(row):
+    region_street = row.split(' - ')[1]
+    region = region_street.split(',')[0]
+  return region
+
+
+def get_city(row):
+  if 'Praha' in str(row):
+    city = 'Praha'
+    return city
+
+
+def get_street(row):
+  street = row.split(',')[-1].strip()
+  return street
+
+
+def clean_dataset(a_df):
+  a_df = a_df.dropna(subset=['price'])
+  a_df = a_df.drop(a_df.columns[[0]], axis=1)
+  a_df = a_df.drop(a_df[a_df['price'] == 'Info o ceně u RK'].index)
+  a_df['area'] = a_df['area'].apply(get_meters)
+  a_df['price'] = a_df['price'].apply(fix_price)
+  a_df['city_part'] = a_df['address'].apply(get_region)
+  a_df['city'] = a_df['address'].apply(get_city)
+  a_df['street'] = a_df['address'].apply(get_street)
+
+  return a_df
+
+
 aparts = []
 apart_links = get_apartment_links(MAIN_URL)
 for link in apart_links:
-  a = scrape_apartment(link)
-  if a:
-    aparts.append(a)
+  aparts.append(scrape_apartment(link))
+aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
+aparts_df = clean_dataset(aparts_df)
 aparts_df.to_csv("data/prazskereality_prague.csv")
