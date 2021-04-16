@@ -1,3 +1,4 @@
+import re
 import time
 from collections import Counter
 from bs4 import BeautifulSoup
@@ -92,11 +93,11 @@ def scrape_apartment(apart_url):
 
   page_soup = BeautifulSoup(requests.get(apart_url).content, 'lxml')
 
-  apart['url'] = apart_url
+  apart['link'] = apart_url
 
   title_elem = page_soup.select_one('h1.b-detail__title > span')
   if not title_elem:
-    return None # apartment that went missing after scraping list of apartments
+    return None  # apartment that went missing after scraping list of apartments
 
   apart['title'] = title_elem.get_text()
   apart['address'] = page_soup.select_one('p.b-detail__info').get_text()
@@ -112,7 +113,6 @@ def scrape_apartment(apart_url):
 
   for f in MIXED_BOOL_FEATURES:
     apart[f] = True if apart[f] or isinstance(apart[f], str) else False
-
 
   for f in BOOL_FEATURES:
     apart[f] = bool(apart[f])
@@ -131,11 +131,39 @@ def count_features(apart_links):
 
   return Counter(all_features), apart_links
 
-# apart_links = list(pd.read_csv('apart_link.csv')['link']) # cached
+
+def get_meters(row):
+  metry_cislo = re.search(r'\d+', str(row))
+  return int(metry_cislo.group(0)) if metry_cislo else ""
+
+
+def fix_price(row):
+  cut_currency = ''.join(row.split(' ')[0:-1])
+  return int(cut_currency.replace('.', ''))
+
+
+def get_size(row):
+  size = re.search(r'\d\+[\w\d]+', row)
+  return size[0] if size else None
+
+
+def clean_dataset(a_df):
+  a_df = a_df.dropna(subset=['price'])  # drop apartments with missing price
+  a_df = a_df.drop(a_df[a_df['price'] == 'Cena na vyžádání'].index)  # remove apartments with unknown price
+  a_df['area'] = a_df['area'].apply(get_meters)
+  a_df['price'] = a_df['price'].apply(fix_price)
+  a_df['size'] = a_df['title'].apply(get_size)
+
+  return a_df
+
+
+# apart_links = list(pd.read_csv('apart_link.csv')['link'])  # cached
 apart_links = get_apartment_links(MAIN_URL)
 aparts = []
 properties = []
 for link in apart_links:
   aparts.append(scrape_apartment(link))
-aparts_df = pd.DataFrame([a for a in aparts if a])
+aparts = [a for a in aparts if a]  # remove None values
+aparts_df = pd.DataFrame(aparts)
+aparts_df = clean_dataset(aparts_df)
 aparts_df.to_csv("data/idnes_prague.csv")
