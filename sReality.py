@@ -2,6 +2,7 @@ import time
 from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import csv
 import os 
 ### selenium setup
@@ -19,7 +20,7 @@ def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
     try:
         for el in page_soup.find('label' , string=parameter).next_sibling(): # pro kazdy label najdi next siblink (hodnota)
-            hodnotaParametru = hodnotaParametru + el.get_text() # v nekterych pripadech je hodnota rozdelena v DOME do vice childu siblinku
+            hodnotaParametru = hodnotaParametru + el.get_text().strip() # v nekterych pripadech je hodnota rozdelena v DOME do vice childu siblinku
             # pokud je X nebo fajka 
             if 'icon-cross' in str(el): hodnotaParametru = False
             if 'icon-ok' in str(el):    hodnotaParametru = True
@@ -33,7 +34,7 @@ def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
 def zparsuj_popis():
     popis=''
     for p in page_soup.select('div.description'):
-        popis= popis + p.get_text()
+        popis= popis + p.get_text().strip()
     return popis
 
 #Ziskani pocet stranek
