@@ -1,0 +1,16 @@
+li {
+    list-style: none;
+    font-size: 18px;
+    font-weight: 300;
+    height: 100%;
+    padding: 7px;
+    transition: transform 250ms;
+}
+
+li:hover {
+    transform: translateY(-10px);
+}
+
+li:active {
+    text-decoration: underline;
+}
