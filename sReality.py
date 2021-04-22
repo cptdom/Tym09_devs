@@ -1,20 +1,23 @@
 import time
 from bs4 import BeautifulSoup
-import requests
+import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import csv
-import os 
+import re
+
 ### selenium setup
 
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
+
+PATH_DRIVER = input('Enter path to chromedriver (exe file): ')
+
 chr_opts = Options()
 chr_opts.add_argument('--headless')
 chr_opts.add_argument('--no-sandbox')
 chr_opts.add_argument('--disable-dev-shm-usage')
-chromedriver_path= ''
-driver = webdriver.Chrome(chromedriver_path,options=chr_opts)
+#chromedriver_path= 'C:/Users\JachymDvorak\Documents\GitHub\Tym09_devs\chromedriver.exe'
+driver = webdriver.Chrome(PATH_DRIVER, options=chr_opts)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
@@ -93,11 +96,83 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     apart['odpad'] =            najdi_parameter('Odpad:')
     properties.append(apart)
 
-#write to CSV
-keys = properties[0].keys()
-with open('bytysReality.csv', 'w', newline='', encoding = 'utf-8')  as output_file:
-    dict_writer = csv.DictWriter(output_file, keys)
-    dict_writer.writeheader()
-    dict_writer.writerows(properties)
+
+# SIMPLE PROCESSING - no need for helper func
+
+df = pd.DataFrame(properties)
+df = df.dropna(subset = ['price'])
+df = df.drop(df[df['price'] == 'Info o ceně u RK'].index)
+df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
+
+
+# converts price to integer        
+def fix_price(row):
+    cut_currency =  row[:-3]
+    return cut_currency.replace('\xa0', '')
+    
+# converts area to meters as integer
+def get_meters(row):
+    metry_cislo = re.search(r'^[0-9]+', row)
+    return int(metry_cislo.group(0)) if metry_cislo else ""
+
+# extracts region
+def get_region(row):
+    if 'Praha' in str(row):
+        kraj = row.split(' - ')[-1]
+    return kraj
+
+# extracts city
+def get_city(row):
+    if 'Praha' in str(row):
+        city = 'Praha'
+    return city
+
+# extracts street
+def get_street(row):
+    street = row.split(',')[0]
+    return street
+
+# gets size (1+1, 2+1 etc)
+def get_size(row):
+    size = re.search(r'[\d][\+][\w]+', row)[0]
+    return size
+
+# convert Y to true N to false
+def clean_elevator(row):
+    if row == 'Y':
+        row = True
+    elif row == 'N':
+        row = False
+    else:
+        row = row
+    return row 
+
+def is_nan(string):
+    return string == string
+
+def clean_basement(row):
+    if is_nan(row):
+        row = True
+    return row
+
+def get_penb(row):
+    if is_nan(row):
+        row = re.findall(r'[A-Z]', str(row))[1]
+    return row
+        
+def clean_dataset(df):
+    df['area'] = df['area'].apply(get_meters)
+    df['city_part'] = df['address'].apply(get_region)
+    df['price'] = df['price'].apply(fix_price)
+    df['city'] = df['address'].apply(get_city)
+    df['street'] = df['address'].apply(get_street)
+    df['size'] = df['title'].apply(get_size)
+    df['elevator'] = df['elevator'].apply(clean_elevator)
+    df['basement']= df['basement'].apply(clean_basement)
+    df['penb'] = df['penb'].apply(get_penb)
+    
+clean_dataset(df)
+    
+df.to_csv('sreality.csv', index = False)
 
 driver.quit()
