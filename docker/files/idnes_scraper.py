@@ -126,7 +126,7 @@ def count_features(apart_links):
   all_features = []
   for link in apart_links:
     print(f'Getting features from apartment: {link}')
-    apart_page = BeautifulSoup(requests.get(link).content, 'html.parser')
+    apart_page = BeautifulSoup(requests.get(link).content, 'lxml')
     f_elems = apart_page.find_all('dt')
     features = [f.get_text() for f in f_elems]
     all_features = all_features + features
