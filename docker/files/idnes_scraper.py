@@ -52,6 +52,8 @@ URL_BASE = 'https://reality.idnes.cz'
 MAIN_URL = f'{URL_BASE}/s/prodej/byty/praha/'
 DEBUG_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-nad-5000000/praha/' # 127 results
 
+debug = False
+
 def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
   head_elem = page_soup.find('dt', text=parameter)
   if head_elem:
@@ -66,9 +68,7 @@ def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
 def get_apartment_links(debug=False):
   print('Running webdriver...')
 
-  # run headless by default
-  driver = webdriver.Chrome() if debug \
-    else webdriver.Chrome(options=CHR_OPTS)
+  driver = webdriver.Chrome(options=CHR_OPTS)
 
   url = DEBUG_URL if debug else MAIN_URL
   nextPageExists = True
@@ -167,7 +167,7 @@ def clean_dataset(a_df):
   return a_df
 
 
-apart_links = get_apartment_links()
+apart_links = get_apartment_links(debug=debug)
 aparts = []
 properties = []
 for i,link in enumerate(apart_links):
