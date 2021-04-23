@@ -21,7 +21,7 @@ CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
 
-debug = True
+debug = False
 
 MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'
 DEBUG_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha-4?cena-od=0&cena-do=4000000&'
@@ -76,8 +76,8 @@ def get_street(row):
 
 # gets size (1+1, 2+1 etc)
 def get_size(row):
-    size = re.search(r'[\d][\+][\w]+', row)[0]
-    return size
+    size = re.search(r'([\d][\+][\w]+)', row)
+    return size.group(1) if size else None
 
 # convert Y to true N to false
 def clean_elevator(row):
@@ -106,6 +106,10 @@ def get_penb(row):
             row = 'nan'
     return row
 
+def get_floor(row):
+    floor = re.search(r'^(-?\d+)\..*', row)
+    return floor.group(1) if floor else None
+
 def clean_dataset(df):
     df['area'] = df['area'].apply(get_meters)
     df['city_part'] = df['address'].apply(get_region)
@@ -116,7 +120,7 @@ def clean_dataset(df):
     df['elevator'] = df['elevator'].apply(clean_elevator)
     df['basement']= df['basement'].apply(clean_basement)
     df['penb'] = df['penb'].apply(get_penb)
-
+    df['floor'] = df['floor'].apply(get_floor)
 
 print('Running webdriver...')
 driver = webdriver.Chrome(options=CHR_OPTS)
@@ -192,9 +196,6 @@ for i in range(len(propertyLinks)): # projdi kazdy link
 df = pd.DataFrame(properties)
 df = df.dropna(subset = ['price'])
 df = df.drop(df[df['price'] == 'Info o ceně u RK'].index)
-df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
-
-
 clean_dataset(df)
 
 df.to_csv(os.getenv("OUT_FILEPATH"), index = False)
