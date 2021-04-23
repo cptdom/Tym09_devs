@@ -77,10 +77,10 @@ def scrape_apartment(apart_url):
 def get_apartment_links(url, debug=False):
   print('Running webdriver...')
   if debug:
-    driver = webdriver.Chrome('chromium.chromedriver')
+    driver = webdriver.Chrome()
   else:
     # run headless by default
-    driver = webdriver.Chrome('chromium.chromedriver', options=CHR_OPTS)
+    driver = webdriver.Chrome(options=CHR_OPTS)
 
   driver.get(url)
 
@@ -89,6 +89,7 @@ def get_apartment_links(url, debug=False):
     try:
       time.sleep(4)
       show_more_btn = driver.find_element_by_css_selector('div.b-filter__inner.pb-0 > div.row > div > p > button')
+      print('Loading more offers...')
       driver.execute_script("arguments[0].click();", show_more_btn)
     except NoSuchElementException:
       break
