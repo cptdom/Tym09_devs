@@ -50,8 +50,7 @@ CHR_OPTS.add_argument('--disable-dev-shm-usage')
 
 URL_BASE = 'https://reality.idnes.cz'
 MAIN_URL = f'{URL_BASE}/s/prodej/byty/praha/'
-# MAIN_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-nad-5000000/praha/' # 120 results
-# MAIN_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-do-2000000/praha/' # 6 results only
+DEBUG_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-nad-5000000/praha/' # 127 results
 
 def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
   head_elem = page_soup.find('dt', text=parameter)
@@ -64,18 +63,23 @@ def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
   return None
 
 
-def get_apartment_links(url, debug=False):
+def get_apartment_links(debug=False):
   print('Running webdriver...')
 
   # run headless by default
   driver = webdriver.Chrome() if debug \
     else webdriver.Chrome(options=CHR_OPTS)
+
+  url = DEBUG_URL if debug else MAIN_URL
   nextPageExists = True
   apart_links = []
 
   driver.get(url)
   time.sleep(25)
+  i_page = 0
   while nextPageExists:
+    i_page = i_page + 1
+    print(f'Scraping page: {i_page}')
     time.sleep(4)
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'lxml')
@@ -139,8 +143,8 @@ def count_features(apart_links):
 
 
 def get_meters(row):
-  metry_cislo = re.search(r'\d+', str(row))
-  return int(metry_cislo.group(0)) if metry_cislo else ""
+  metry_cislo = re.search(r'(\d)+', str(row))
+  return int(metry_cislo.group(1)) if metry_cislo else ""
 
 
 def fix_price(row):
@@ -163,8 +167,7 @@ def clean_dataset(a_df):
   return a_df
 
 
-# apart_links = list(pd.read_csv('apart_link.csv')['link'])  # cached
-apart_links = get_apartment_links(MAIN_URL)
+apart_links = get_apartment_links(debug=True)
 aparts = []
 properties = []
 for i,link in enumerate(apart_links):

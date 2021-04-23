@@ -118,8 +118,8 @@ def get_apartment_links(url, debug=False):
 
 def get_meters(row):
   metraz = row.split(',')[-1].strip()
-  metry_cislo = re.search(r'\d+', metraz)
-  return int(metry_cislo.group(0)) if metry_cislo else ""
+  metry_cislo = re.search(r'(\d+)', metraz)
+  return int(metry_cislo.group(1)) if metry_cislo else ""
 
 
 def fix_price(row):

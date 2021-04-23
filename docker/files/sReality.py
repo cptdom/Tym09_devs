@@ -20,7 +20,11 @@ CHR_OPTS.add_argument('--disable-gpu')
 CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=CHR_OPTS)
+
+debug = True
+
+MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'
+DEBUG_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha-4?cena-od=0&cena-do=4000000&'
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
@@ -43,92 +47,15 @@ def zparsuj_popis():
         popis= popis + p.get_text().strip()
     return popis
 
-print('Running webdriver...')
-#Ziskani pocet stranek
-nextPageExists= True
-propertyLinks= []
-i=1
-while nextPageExists:
-    #url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&cena-od=0&cena-do=2800000&&strana={}&bez-aukce=1'.format(i)
-    url = 'https://www.sreality.cz/hledani/prodej/byty/praha?&strana={}'.format(i) # Otevri URL hledani bytu
-    driver.get(url) # otevri v chromu url link
-    time.sleep(3) # pockej 3 vteriny
-    page_source=driver.page_source
-    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky
-    if page_soup.select('a.title'): # Pokud na stracne existuje a class="title" - nazev inzeratu obsahujici href na inzerat
-        #Zescrapuj odkazy na nemovitosti
-        for link in page_soup.select('a.title'): # projdi kazdy a.title
-            propertyLinks.append('https://sreality.cz'+link.get('href')) # uloz odkaz na inzerat
-        i=i+1
-    else:
-        nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
-
-propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
-print(f'Found {len(propertyLinks)} apartments')
-### setup
-properties = [] 
-# Přiřaď nemovitosti atribut
-for i in range(len(propertyLinks)): # projdi kazdy link
-    apart = {}
-    url = propertyLinks[i]
-    print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
-    driver.get(url) # otevry link
-    time.sleep(2)
-    page_source=driver.page_source
-    page_soup=BeautifulSoup(page_source,'lxml')
-
-    # wait for page to load
-    while True:
-        try_scrape_elem = page_soup.select_one('div.property-title > h1 > span > span')
-        if not try_scrape_elem:
-            time.sleep(2)
-            page_soup = BeautifulSoup(driver.page_source,'lxml')
-        else:
-          break
-
-    apart['title'] =            page_soup.select_one('div.property-title > h1 > span > span').get_text()
-    apart['address'] =          page_soup.select_one('span.location-text').get_text()
-    apart['area'] =             najdi_parameter('Užitná plocha:')
-    apart['floor_area']=        najdi_parameter('Plocha podlahová:')
-    apart['price']=             page_soup.select_one('span.norm-price').get_text()
-    apart['description'] =      zparsuj_popis()
-    apart['basement'] =         najdi_parameter('Sklep:')
-    apart['building_type']=     najdi_parameter('Stavba:')
-    apart['penb'] =             najdi_parameter('Energetická náročnost budovy:')
-    apart['floor'] =            najdi_parameter('Podlaží:')
-    apart['state'] =            najdi_parameter('Stav objektu:')
-    apart['internet'] =         najdi_parameter('Telekomunikace:')
-    apart['equipment'] =        najdi_parameter('Vybavení:')
-    apart['elevator'] =         najdi_parameter('Výtah:')
-    apart['parking'] =          najdi_parameter('Parkování:')
-    apart['electricity'] =      najdi_parameter('Elektřina:')
-    apart['link'] =             propertyLinks[i]
-    apart['gas'] =              najdi_parameter('Plyn:')
-    apart['loggia'] =           najdi_parameter('Lodžie:')
-    apart['umistneni_objektu'] =najdi_parameter('Umístění objektu:')
-    apart['doprava'] =          najdi_parameter('Doprava:')
-    apart['voda'] =             najdi_parameter('Voda:')
-    apart['odpad'] =            najdi_parameter('Odpad:')
-    properties.append(apart)
-
-
-# SIMPLE PROCESSING - no need for helper func
-
-df = pd.DataFrame(properties)
-df = df.dropna(subset = ['price'])
-df = df.drop(df[df['price'] == 'Info o ceně u RK'].index)
-df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
-
-
-# converts price to integer        
+# converts price to integer
 def fix_price(row):
     cut_currency =  row[:-3]
     return cut_currency.replace('\xa0', '')
 
 # converts area to meters as integer
 def get_meters(row):
-    metry_cislo = re.search(r'^[0-9]+', row)
-    return int(metry_cislo.group(0)) if metry_cislo else ""
+    metry_cislo = re.search(r'^([0-9]+)', row)
+    return int(metry_cislo.group(1)) if metry_cislo else ""
 
 # extracts region
 def get_region(row):
@@ -189,6 +116,84 @@ def clean_dataset(df):
     df['elevator'] = df['elevator'].apply(clean_elevator)
     df['basement']= df['basement'].apply(clean_basement)
     df['penb'] = df['penb'].apply(get_penb)
+
+
+print('Running webdriver...')
+driver = webdriver.Chrome(options=CHR_OPTS)
+#Ziskani pocet stranek
+nextPageExists= True
+propertyLinks= []
+i=1
+while nextPageExists:
+    #url = '&bez-aukce=1'.format(i)
+    prefix = DEBUG_URL if debug else MAIN_URL
+    url = f'{prefix}strana={i}' # Otevri URL hledani bytu
+    print(f'Scraping page: {i}')
+    driver.get(url) # otevri v chromu url link
+    time.sleep(3) # pockej 3 vteriny
+    page_source=driver.page_source
+    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky
+    if page_soup.select('a.title'): # Pokud na stracne existuje a class="title" - nazev inzeratu obsahujici href na inzerat
+        #Zescrapuj odkazy na nemovitosti
+        for link in page_soup.select('a.title'): # projdi kazdy a.title
+            propertyLinks.append('https://sreality.cz'+link.get('href')) # uloz odkaz na inzerat
+        i=i+1
+    else:
+        nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
+
+propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
+print(f'Found {len(propertyLinks)} apartments in {i} pages')
+### setup
+properties = []
+# Přiřaď nemovitosti atribut
+for i in range(len(propertyLinks)): # projdi kazdy link
+    apart = {}
+    url = propertyLinks[i]
+    print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
+    driver.get(url) # otevry link
+    time.sleep(2)
+    page_source=driver.page_source
+    page_soup=BeautifulSoup(page_source,'lxml')
+
+    # wait for page to load
+    while True:
+        try_scrape_elem = page_soup.select_one('div.property-title > h1 > span > span')
+        if not try_scrape_elem:
+            time.sleep(2)
+            page_soup = BeautifulSoup(driver.page_source,'lxml')
+        else:
+            break
+
+    apart['title'] =            page_soup.select_one('div.property-title > h1 > span > span').get_text()
+    apart['address'] =          page_soup.select_one('span.location-text').get_text()
+    apart['area'] =             najdi_parameter('Užitná plocha:')
+    apart['floor_area']=        najdi_parameter('Plocha podlahová:')
+    apart['price']=             page_soup.select_one('span.norm-price').get_text()
+    apart['description'] =      zparsuj_popis()
+    apart['basement'] =         najdi_parameter('Sklep:')
+    apart['building_type']=     najdi_parameter('Stavba:')
+    apart['penb'] =             najdi_parameter('Energetická náročnost budovy:')
+    apart['floor'] =            najdi_parameter('Podlaží:')
+    apart['state'] =            najdi_parameter('Stav objektu:')
+    apart['internet'] =         najdi_parameter('Telekomunikace:')
+    apart['equipment'] =        najdi_parameter('Vybavení:')
+    apart['elevator'] =         najdi_parameter('Výtah:')
+    apart['parking'] =          najdi_parameter('Parkování:')
+    apart['electricity'] =      najdi_parameter('Elektřina:')
+    apart['link'] =             propertyLinks[i]
+    apart['gas'] =              najdi_parameter('Plyn:')
+    apart['loggia'] =           najdi_parameter('Lodžie:')
+    apart['umistneni_objektu'] =najdi_parameter('Umístění objektu:')
+    apart['doprava'] =          najdi_parameter('Doprava:')
+    apart['voda'] =             najdi_parameter('Voda:')
+    apart['odpad'] =            najdi_parameter('Odpad:')
+    properties.append(apart)
+
+df = pd.DataFrame(properties)
+df = df.dropna(subset = ['price'])
+df = df.drop(df[df['price'] == 'Info o ceně u RK'].index)
+df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
+
 
 clean_dataset(df)
 
