@@ -86,11 +86,11 @@ def get_apartment_links(url, debug=False):
     driver = webdriver.Chrome(options=CHR_OPTS)
 
   driver.get(url)
-
+  time.sleep(25)
   # click 'Show more' until there are no more apartments to load
   while (True):
     try:
-      time.sleep(4)
+      time.sleep(10)
       show_more_btn = driver.find_element_by_css_selector('div.b-filter__inner.pb-0 > div.row > div > p > button')
       print('Loading more offers...')
       driver.execute_script("arguments[0].click();", show_more_btn)
