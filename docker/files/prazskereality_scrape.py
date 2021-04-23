@@ -23,7 +23,7 @@ PAR_TBL_HEADINGS = {
   'Terasa': 'terrace'
 }
 URL_BASE = 'https://www.prazskereality.cz'
-BOOL_FEATURES = ['equipment', 'basement', 'elevator', 'barrier_free']
+BOOL_FEATURES = ['equipment', 'basement', 'elevator', 'barrier_free', 'terrace', 'balcony']
 MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
 
 
@@ -78,7 +78,7 @@ def scrape_apartment(apart_url):
 
   # bool features
   for f in BOOL_FEATURES:
-    apart[f] = True if f in apart.keys() and apart[f].lower() == "ano" else False
+    apart[f] = True if f in apart.keys() and apart[f] and apart[f].lower() == "ano" else False
 
   return apart
 
@@ -153,6 +153,7 @@ def clean_dataset(a_df):
 
 aparts = []
 apart_links = get_apartment_links(MAIN_URL)
+# apart_links = ['https://www.prazskereality.cz/v-soucasne-situaci-nabizime-bezne-prohlidky-s-rouskou-a--7358850.html']
 for link in apart_links:
   aparts.append(scrape_apartment(link))
 aparts = [a for a in aparts if a]  # remove None values
