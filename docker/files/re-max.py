@@ -1,3 +1,4 @@
+import os
 import time
 from bs4 import BeautifulSoup
 import requests
@@ -6,6 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import re
 ### selenium setup
+debug = False
 
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
@@ -14,6 +16,12 @@ chr_opts.add_argument('--headless')
 chr_opts.add_argument('--no-sandbox')
 chr_opts.add_argument('--disable-dev-shm-usage')
 driver = webdriver.Chrome(options=chr_opts)
+print('Running webdriver...')
+if debug:
+    driver = webdriver.Chrome()
+else:
+    # run headless by default
+    driver = webdriver.Chrome(options=chr_opts)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
@@ -53,9 +61,10 @@ while nextPageExists:
         nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
 driver.close()
 propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
-print(f'Found {len(propertyLinks)} apartments')
+print(f'Found {len(propertyLinks)} apartments in {i-1} pages')
 ### setup
-properties = [] 
+# propertyLinks = ['https://www.remax-czech.cz/reality/detail/310428/prodej-bytu-2-1-v-druzstevnim-vlastnictvi-57-m2-praha-6-brevnov']
+properties = []
 # Přiřaď nemovitosti atribut
 for i in range(len(propertyLinks)): # projdi kazdy link
     print(f'Scraping apartment: {propertyLinks[i]}')
@@ -67,7 +76,8 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     #apart['title'] =           page_soup.select_one('h4.property-title > h1 > span > span').get_text().strip()
     #apart['address'] =         page_soup.select_one('span.location-text').get_text().strip()
     apart['area'] =             najdi_parameter('Celková plocha:')
-    apart['price'] =            page_soup.select_one('div.mortgage-calc__RE-price > p').get_text().strip()
+    price_elem = page_soup.select_one('div.mortgage-calc__RE-price > p')
+    apart['price'] =            price_elem.get_text().strip() if price_elem else None
     apart['description'] =      page_soup.select_one('div.pd-base-info__content-collapse-inner').get_text().strip()
     apart['basement'] =         najdi_parameter('Sklep:')
     apart['building_type']=     najdi_parameter('Druh objektu:')
@@ -159,7 +169,7 @@ def clean_dataset(df):
     
 clean_dataset(df)
     
-df.to_csv('remax.csv', index = False)
+df.to_csv(os.getenv("OUT_FILEPATH"), index = False)
 
 driver.quit()
 
