@@ -55,7 +55,7 @@ def find_in_table(par_table, heading):
 def scrape_apartment(apart_url):
   apart = {}
 
-  apart_page = BeautifulSoup(requests.get(apart_url).content, 'lxml')
+  apart_page = BeautifulSoup(requests.get(apart_url).content, 'html.parser')
 
   apart['link'] = apart_url
   address_field = apart_page.select_one('div.main-description > h1 > p')
