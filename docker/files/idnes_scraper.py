@@ -1,3 +1,4 @@
+import os
 import re
 import time
 from collections import Counter
@@ -26,14 +27,13 @@ PAR_TBL_HEADINGS = {
   'Vybavení': 'equipment',
   'Výtah': 'elevator',
   'PENB': 'penb',
-  'Internet': 'internet',
-  'Roční spotřeba energie': 'annual_electricity'
+  'Internet': 'internet'
 }
 
 # in this case some features are bool, some strings > bool
-MIXED_BOOL_FEATURES = ['balcony']
+MIXED_BOOL_FEATURES = ['balcony', 'terrace']
 # bool only features - either True (checkmark) or missing
-BOOL_FEATURES = ['basement', 'internet']
+BOOL_FEATURES = ['basement', 'internet', 'elevator']
 
 ### selenium setup
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
@@ -168,4 +168,4 @@ for link in apart_links:
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("/data/idnes_prague.csv")
+aparts_df.to_csv(os.getenv("OUT_FILEPATH"), index = False)

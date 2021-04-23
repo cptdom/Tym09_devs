@@ -1,3 +1,4 @@
+import os
 import re
 import time
 
@@ -143,4 +144,4 @@ for link in apart_links:
   aparts.append(scrape_apartment(link))
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("data/bezrealitky_prague.csv", index = False)
+aparts_df.to_csv(os.getenv("OUT_FILEPATH"), index = False)

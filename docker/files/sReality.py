@@ -1,3 +1,4 @@
+import os
 import time
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -10,14 +11,11 @@ import re
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
 
-PATH_DRIVER = input('Enter path to chromedriver (exe file): ')
-
 chr_opts = Options()
 chr_opts.add_argument('--headless')
 chr_opts.add_argument('--no-sandbox')
 chr_opts.add_argument('--disable-dev-shm-usage')
-#chromedriver_path= 'C:/Users\JachymDvorak\Documents\GitHub\Tym09_devs\chromedriver.exe'
-driver = webdriver.Chrome(PATH_DRIVER, options=chr_opts)
+driver = webdriver.Chrome(options=chr_opts)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
@@ -40,13 +38,14 @@ def zparsuj_popis():
         popis= popis + p.get_text().strip()
     return popis
 
+print('Running webdriver...')
 #Ziskani pocet stranek
 nextPageExists= True
 propertyLinks= []
 i=1
 while nextPageExists:
     #url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&cena-od=0&cena-do=2800000&&strana={}&bez-aukce=1'.format(i) 
-    url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&vlastnictvi=osobni&strana={}&bez-aukce=1'.format(i) # Otevri URL hledani bytu
+    url = 'https://www.sreality.cz/hledani/prodej/byty/praha?&strana={}'.format(i) # Otevri URL hledani bytu
     driver.get(url) # otevri v chromu url link
     time.sleep(3) # pockej 3 vteriny
     page_source=driver.page_source 
@@ -60,13 +59,14 @@ while nextPageExists:
         nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
 
 propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
-
+print(f'Found {len(propertyLinks)} apartments')
 ### setup
 properties = [] 
 # Přiřaď nemovitosti atribut
 for i in range(len(propertyLinks)): # projdi kazdy link
     apart = {}
-    url = propertyLinks[i] 
+    url = propertyLinks[i]
+    print(f'Scraping apartment: {url}')
     driver.get(url) # otevry link
     time.sleep(2)
     page_source=driver.page_source
@@ -177,6 +177,6 @@ def clean_dataset(df):
     
 clean_dataset(df)
     
-df.to_csv('sreality.csv', index = False)
+df.to_csv(os.getenv("OUT_FILEPATH"), index = False)
 
 driver.quit()

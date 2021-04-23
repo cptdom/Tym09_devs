@@ -10,11 +10,10 @@ import re
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
 chr_opts = Options()
-#chr_opts.add_argument('--headless')
+chr_opts.add_argument('--headless')
 chr_opts.add_argument('--no-sandbox')
 chr_opts.add_argument('--disable-dev-shm-usage')
-chromedriver_path= 'C:/Users\JachymDvorak\Documents\GitHub\Tym09_devs\chromedriver.exe'
-driver = webdriver.Chrome(chromedriver_path)
+driver = webdriver.Chrome(options=chr_opts)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
@@ -38,7 +37,7 @@ propertyLinks= []
 i=1
 while nextPageExists:
     #url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&cena-od=0&cena-do=2800000&&strana={}&bez-aukce=1'.format(i) 
-    url = 'https://www.remax-czech.cz/reality/byty/1+1/prodej/praha/?stranka={}'.format(i) # Otevri URL hledani bytu
+    url = 'https://www.remax-czech.cz/reality/byty/prodej/praha/?stranka={}'.format(i) # Otevri URL hledani bytu
     driver.get(url) # otevri v chromu url link
     time.sleep(3) # pockej 3 vteriny
     page_source=driver.page_source 
@@ -54,6 +53,7 @@ while nextPageExists:
         nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
 driver.close()
 propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
+print(f'Found {len(propertyLinks)} apartments')
 ### setup
 properties = [] 
 # Přiřaď nemovitosti atribut

@@ -16,6 +16,22 @@ default_args = {
     'prazskereality': {
       'script': 'prazskereality_scrape.py',
       'out_filename': 'prazskereality.csv'
+    },
+    'idnes': {
+      'script': 'idnes_scraper.py',
+      'out_filename': 'idnes.csv'
+    },
+    'remax': {
+      'script': 're-max.py',
+      'out_filename': 'remax.csv'
+    },
+    'sreality': {
+      'script': 'sReality.py',
+      'out_filename': 'sreality.csv'
+    },
+    'bezrealitky': {
+      'script': 'bezrealitky_scrape.py',
+      'out_filename': 'bezrealitky.csv'
     }
   }
 }
