@@ -167,7 +167,7 @@ def clean_dataset(a_df):
   return a_df
 
 
-apart_links = get_apartment_links(debug=True)
+apart_links = get_apartment_links()
 aparts = []
 properties = []
 for i,link in enumerate(apart_links):
