@@ -63,12 +63,13 @@ def get_apartment_links(url, debug=False):
   print('Running webdriver...')
 
   # run headless by default
-  driver = webdriver.Chrome('chromium.chromedriver') if debug \
-    else webdriver.Chrome('chromium.chromedriver', options=CHR_OPTS)
+  driver = webdriver.Chrome() if debug \
+    else webdriver.Chrome(options=CHR_OPTS)
   nextPageExists = True
   apart_links = []
 
   driver.get(url)
+  time.sleep(25)
   while nextPageExists:
     time.sleep(4)
     page_source = driver.page_source
@@ -84,6 +85,7 @@ def get_apartment_links(url, debug=False):
 
   driver.close()
   apart_links = list(dict.fromkeys(apart_links))  # Remove duplicates
+  print(f'Found {len(apart_links)} apartments')
   return apart_links
 
 
@@ -166,4 +168,4 @@ for link in apart_links:
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("data/idnes_prague.csv")
+aparts_df.to_csv("/data/idnes_prague.csv")

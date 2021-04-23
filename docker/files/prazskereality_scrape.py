@@ -1,5 +1,5 @@
 import re
-
+import os
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
@@ -41,6 +41,7 @@ def get_apartment_links(url):
     next_page_lnk = URL_BASE + next_btn.attrs.get('href')
     soup = BeautifulSoup(requests.get(next_page_lnk).content, "html.parser")
 
+  print(f'Found {len(offers)} apartments')
   return offers
 
 
@@ -125,7 +126,6 @@ def get_street(row):
 
 def clean_dataset(a_df):
   a_df = a_df.dropna(subset=['price'])
-  a_df = a_df.drop(a_df.columns[[0]], axis=1)
   a_df = a_df.drop(a_df[a_df['price'] == 'Info o ceně u RK'].index)
   a_df['area'] = a_df['area'].apply(get_meters)
   a_df['price'] = a_df['price'].apply(fix_price)
@@ -143,4 +143,4 @@ for link in apart_links:
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("data/prazskereality_prague.csv")
+aparts_df.to_csv(os.getenv("OUT_FILEPATH"))
