@@ -28,7 +28,7 @@ MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
 
 
 def get_apartment_links(url):
-  soup = BeautifulSoup(requests.get(url).content, "html.parser")
+  soup = BeautifulSoup(requests.get(url).content, "lxml")
   offers = []
   while (True):
     for offer in soup.select('div.results-list-item'):
@@ -39,7 +39,7 @@ def get_apartment_links(url):
     if (not next_btn):
       break
     next_page_lnk = URL_BASE + next_btn.attrs.get('href')
-    soup = BeautifulSoup(requests.get(next_page_lnk).content, "html.parser")
+    soup = BeautifulSoup(requests.get(next_page_lnk).content, "lxml")
 
   print(f'Found {len(offers)} apartments')
   return offers
@@ -56,7 +56,7 @@ def scrape_apartment(apart_url):
   print(f'Scraping apartment: {apart_url}')
   apart = {}
 
-  apart_page = BeautifulSoup(requests.get(apart_url).content, 'html.parser')
+  apart_page = BeautifulSoup(requests.get(apart_url).content, 'lxml')
 
   apart['link'] = apart_url
   address_field = apart_page.select_one('div.main-description > h1 > p')
@@ -87,7 +87,7 @@ def count_features():
   all_features = []
   apart_links = get_apartment_links(MAIN_URL)
   for link in apart_links:
-    apart_page = BeautifulSoup(requests.get(link).content, 'html.parser')
+    apart_page = BeautifulSoup(requests.get(link).content, 'lxml')
     parameters_div = apart_page.select_one('div.main-parameters')
     if parameters_div:
       f_elems = parameters_div.find_all('dt')

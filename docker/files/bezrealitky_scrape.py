@@ -52,7 +52,7 @@ def scrape_apartment(apart_url):
   print(f'Scraping apartment: {apart_url}')
   apart = {}
 
-  apart_page = BeautifulSoup(requests.get(apart_url).content, 'html.parser')
+  apart_page = BeautifulSoup(requests.get(apart_url).content, 'lxml')
 
   apart['link'] = apart_url
   apart['title'] = apart_page.select_one('h1.heading__title > span:nth-child(1)').get_text()
@@ -97,7 +97,7 @@ def get_apartment_links(url, debug=False):
     except NoSuchElementException:
       break
 
-  soup = BeautifulSoup(driver.page_source, "html.parser")
+  soup = BeautifulSoup(driver.page_source, "lxml")
   driver.quit()
 
   # collect all links
