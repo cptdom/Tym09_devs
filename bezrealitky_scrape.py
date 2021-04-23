@@ -118,11 +118,18 @@ def fix_price(row):
   cut_currency = row.split(' ')[0]
   return int(cut_currency.replace('.', ''))
 
+def get_street(row):
+    try:
+        street = row.split(',')[0]
+    except:
+        street = 'nan'
+    return street
 
 def clean_dataset(a_df):
   a_df = a_df.dropna(subset=['price'])
   a_df['area'] = a_df['area'].apply(get_meters)
   a_df['price'] = a_df['price'].apply(fix_price)
+  a_df['street'] = a_df['address'].apply(get_street)
 
   return a_df
 
@@ -133,4 +140,4 @@ for link in apart_links:
   aparts.append(scrape_apartment(link))
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("data/bezrealitky_prague.csv")
+aparts_df.to_csv("data/bezrealitky_prague.csv", index = False)
