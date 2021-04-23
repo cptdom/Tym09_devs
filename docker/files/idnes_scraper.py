@@ -90,7 +90,6 @@ def get_apartment_links(url, debug=False):
 
 
 def scrape_apartment(apart_url):
-  print(f'Scraping apartment: {apart_url}')
   apart = {}
 
   page_soup = BeautifulSoup(requests.get(apart_url).content, 'lxml')
@@ -163,7 +162,8 @@ def clean_dataset(a_df):
 apart_links = get_apartment_links(MAIN_URL)
 aparts = []
 properties = []
-for link in apart_links:
+for i,link in enumerate(apart_links):
+  print(f'[{i+1}/{len(apart_links)}] Scraping apartment: {link}')
   aparts.append(scrape_apartment(link))
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)

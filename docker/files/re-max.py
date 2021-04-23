@@ -67,9 +67,9 @@ print(f'Found {len(propertyLinks)} apartments in {i-1} pages')
 properties = []
 # Přiřaď nemovitosti atribut
 for i in range(len(propertyLinks)): # projdi kazdy link
-    print(f'Scraping apartment: {propertyLinks[i]}')
     apart = {}
-    url = propertyLinks[i] 
+    url = propertyLinks[i]
+    print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
     page_soup = BeautifulSoup(requests.get(url).content, 'lxml')
     for e in page_soup.findAll('br'):
         e.extract()

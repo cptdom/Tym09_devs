@@ -53,7 +53,6 @@ def find_in_table(par_table, heading):
 
 
 def scrape_apartment(apart_url):
-  print(f'Scraping apartment: {apart_url}')
   apart = {}
 
   apart_page = BeautifulSoup(requests.get(apart_url).content, 'lxml')
@@ -154,7 +153,8 @@ def clean_dataset(a_df):
 aparts = []
 apart_links = get_apartment_links(MAIN_URL)
 # apart_links = ['https://www.prazskereality.cz/v-soucasne-situaci-nabizime-bezne-prohlidky-s-rouskou-a--7358850.html']
-for link in apart_links:
+for i,link in enumerate(apart_links):
+  print(f'[{i+1}/{len(apart_links)}] Scraping apartment: {link}')
   aparts.append(scrape_apartment(link))
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
