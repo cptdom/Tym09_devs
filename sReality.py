@@ -147,17 +147,21 @@ def clean_elevator(row):
         row = row
     return row 
 
-def is_nan(string):
+def is_not_nan(string):
     return string == string
 
 def clean_basement(row):
-    if is_nan(row):
+    if row != 'null':
         row = True
     return row
 
 def get_penb(row):
-    if is_nan(row):
-        row = re.findall(r'[A-Z]', str(row))[1]
+    if is_not_nan(row):
+        row = re.findall(r'[A-Z]', str(row))
+        if len(row) > 1:
+            row = row[1]
+        else:
+            row = 'nan'
     return row
         
 def clean_dataset(df):

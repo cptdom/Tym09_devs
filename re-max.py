@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import csv
-import os 
+import pandas as pd
+import re
 ### selenium setup
 
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
@@ -13,7 +13,7 @@ chr_opts = Options()
 #chr_opts.add_argument('--headless')
 chr_opts.add_argument('--no-sandbox')
 chr_opts.add_argument('--disable-dev-shm-usage')
-chromedriver_path= '/Users/mdup/Documents/IT_projekty/Tym09_devs/chromedriver'
+chromedriver_path= 'C:/Users\JachymDvorak\Documents\GitHub\Tym09_devs\chromedriver.exe'
 driver = webdriver.Chrome(chromedriver_path)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
@@ -89,15 +89,77 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     apart['voda'] =             najdi_parameter('Voda:')
     apart['odpad'] =            najdi_parameter('Odpad:')
     apart['obcanska_vybavenost']= najdi_parameter('Občanská vybavenost:')
+    apart['address'] =          page_soup.select_one('h2.pd-header__address').get_text().strip()
+    apart['size']   =           najdi_parameter('Dispozice:')
     properties.append(apart)
 
 
-#write to CSV
-keys = properties[0].keys()
-with open('bytyRemax.csv', 'w', newline='', encoding = 'utf-8')  as output_file:
-    dict_writer = csv.DictWriter(output_file, keys)
-    dict_writer.writeheader()
-    dict_writer.writerows(properties)
+df = pd.DataFrame(properties)
+df = df.dropna(subset = ['price'])
+df = df.drop(df[df['price'] == 'Info o ceně u RK'].index)
+df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
+
+
+# converts price to integer        
+def fix_price(row):
+    cut_currency =  row[:-3]
+    return cut_currency.replace('\xa0', '')
+    
+# converts area to meters as integer
+def get_meters(row):
+    metry_cislo = re.search(r'^[0-9]+', row)
+    return int(metry_cislo.group(0)) if metry_cislo else ""
+
+# extracts region
+def get_city_part(row):
+    if 'Praha' in str(row):
+        kraj = row.split('– ')[1]
+        kraj = kraj.split(' ')[0]
+    return kraj
+
+# extracts city
+def get_city(row):
+    if 'Praha' in str(row):
+        city = 'Praha'
+    return city
+
+# extracts street
+def get_street(row):
+    street = re.search(r'(^[ulice]+)(\s)([\w ]+)', row)
+    if street is not None: 
+        street = street.group(3)
+    else:
+        street = 'nan'
+    return street
+
+# convert Y to true N to false
+def clean_elevator(row):
+    if row == 'Ano':
+        row = True
+    elif row == 'Ne':
+        row = False
+    else:
+        row = row
+    return row 
+
+
+def clean_basement(row):
+    if row != 'null':
+        row = True
+    return row
+        
+def clean_dataset(df):
+    df['area'] = df['area'].apply(get_meters)
+    df['city_part'] = df['address'].apply(get_city_part)
+    df['price'] = df['price'].apply(fix_price)
+    df['city'] = df['address'].apply(get_city)
+    df['street'] = df['address'].apply(get_street)
+    df['elevator'] = df['elevator'].apply(clean_elevator)
+    df['basement']= df['basement'].apply(clean_basement)
+    
+clean_dataset(df)
+    
+df.to_csv('remax.csv', index = False)
 
 driver.quit()
 
