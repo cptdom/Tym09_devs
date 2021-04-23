@@ -22,7 +22,7 @@ def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     try:
         for el in page_soup.find('label' , string=parameter).next_sibling(): # pro kazdy label najdi next siblink (hodnota)
             hodnotaParametru = hodnotaParametru + el.get_text().strip() # v nekterych pripadech je hodnota rozdelena v DOME do vice childu siblinku
-            # pokud je X nebo fajka 
+            # pokud je X nebo fajka
             if 'icon-cross' in str(el): hodnotaParametru = False
             if 'icon-ok' in str(el):    hodnotaParametru = True
     except:
@@ -44,16 +44,16 @@ nextPageExists= True
 propertyLinks= []
 i=1
 while nextPageExists:
-    #url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&cena-od=0&cena-do=2800000&&strana={}&bez-aukce=1'.format(i) 
+    #url = 'https://www.sreality.cz/hledani/prodej/byty/praha?velikost=1%2B1&cena-od=0&cena-do=2800000&&strana={}&bez-aukce=1'.format(i)
     url = 'https://www.sreality.cz/hledani/prodej/byty/praha?&strana={}'.format(i) # Otevri URL hledani bytu
     driver.get(url) # otevri v chromu url link
     time.sleep(3) # pockej 3 vteriny
-    page_source=driver.page_source 
-    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky 
+    page_source=driver.page_source
+    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky
     if page_soup.select('a.title'): # Pokud na stracne existuje a class="title" - nazev inzeratu obsahujici href na inzerat
         #Zescrapuj odkazy na nemovitosti
         for link in page_soup.select('a.title'): # projdi kazdy a.title
-            propertyLinks.append('https://sreality.cz'+link.get('href')) # uloz odkaz na inzerat 
+            propertyLinks.append('https://sreality.cz'+link.get('href')) # uloz odkaz na inzerat
         i=i+1
     else:
         nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
@@ -71,12 +71,22 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     time.sleep(2)
     page_source=driver.page_source
     page_soup=BeautifulSoup(page_source,'lxml')
+
+    # wait for page to load
+    while True:
+        try_scrape_elem = page_soup.select_one('div.property-title > h1 > span > span')
+        if not try_scrape_elem:
+            time.sleep(2)
+            page_soup = BeautifulSoup(driver.page_source,'lxml')
+        else:
+          break
+
     apart['title'] =            page_soup.select_one('div.property-title > h1 > span > span').get_text()
     apart['address'] =          page_soup.select_one('span.location-text').get_text()
     apart['area'] =             najdi_parameter('Užitná plocha:')
     apart['floor_area']=        najdi_parameter('Plocha podlahová:')
     apart['price']=             page_soup.select_one('span.norm-price').get_text()
-    apart['description'] =      zparsuj_popis() 
+    apart['description'] =      zparsuj_popis()
     apart['basement'] =         najdi_parameter('Sklep:')
     apart['building_type']=     najdi_parameter('Stavba:')
     apart['penb'] =             najdi_parameter('Energetická náročnost budovy:')
@@ -109,7 +119,7 @@ df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
 def fix_price(row):
     cut_currency =  row[:-3]
     return cut_currency.replace('\xa0', '')
-    
+
 # converts area to meters as integer
 def get_meters(row):
     metry_cislo = re.search(r'^[0-9]+', row)
@@ -145,7 +155,7 @@ def clean_elevator(row):
         row = False
     else:
         row = row
-    return row 
+    return row
 
 def is_not_nan(string):
     return string == string
@@ -163,7 +173,7 @@ def get_penb(row):
         else:
             row = 'nan'
     return row
-        
+
 def clean_dataset(df):
     df['area'] = df['area'].apply(get_meters)
     df['city_part'] = df['address'].apply(get_region)
@@ -174,9 +184,9 @@ def clean_dataset(df):
     df['elevator'] = df['elevator'].apply(clean_elevator)
     df['basement']= df['basement'].apply(clean_basement)
     df['penb'] = df['penb'].apply(get_penb)
-    
+
 clean_dataset(df)
-    
+
 df.to_csv(os.getenv("OUT_FILEPATH"), index = False)
 
 driver.quit()
