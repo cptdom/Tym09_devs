@@ -66,7 +66,7 @@ properties = []
 for i in range(len(propertyLinks)): # projdi kazdy link
     apart = {}
     url = propertyLinks[i]
-    print(f'Scraping apartment: {url}')
+    print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
     driver.get(url) # otevry link
     time.sleep(2)
     page_source=driver.page_source
