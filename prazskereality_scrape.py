@@ -122,16 +122,28 @@ def get_street(row):
   street = row.split(',')[-1].strip()
   return street
 
+def is_not_nan(string):
+    return string == string
+
+def get_penb(row):
+    if is_not_nan(row) or row != 'null':
+        row = re.findall(r'[A-Z]', str(row))
+        if len(row) > 1:
+            row = row[0]
+        else:
+            row = 'nan'
+    return row
+
 
 def clean_dataset(a_df):
   a_df = a_df.dropna(subset=['price'])
-  a_df = a_df.drop(a_df.columns[[0]], axis=1)
   a_df = a_df.drop(a_df[a_df['price'] == 'Info o ceně u RK'].index)
   a_df['area'] = a_df['area'].apply(get_meters)
   a_df['price'] = a_df['price'].apply(fix_price)
   a_df['city_part'] = a_df['address'].apply(get_region)
   a_df['city'] = a_df['address'].apply(get_city)
   a_df['street'] = a_df['address'].apply(get_street)
+  a_df['penb'] = a_df['penb'].apply(get_penb)
 
   return a_df
 
@@ -143,4 +155,4 @@ for link in apart_links:
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("data/prazskereality_prague.csv")
+aparts_df.to_csv("prazskereality_prague.csv", index = False)
