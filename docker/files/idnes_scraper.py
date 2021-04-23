@@ -39,6 +39,11 @@ BOOL_FEATURES = ['basement', 'internet', 'elevator']
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
 CHR_OPTS = Options()
+CHR_OPTS.add_argument('start-maximized')
+CHR_OPTS.add_argument('enable-automation')
+CHR_OPTS.add_argument('--disable-infobars')
+CHR_OPTS.add_argument('--disable-browser-side-navigation')
+CHR_OPTS.add_argument('--disable-gpu')
 CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')

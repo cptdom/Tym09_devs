@@ -11,17 +11,22 @@ debug = False
 
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
-chr_opts = Options()
-chr_opts.add_argument('--headless')
-chr_opts.add_argument('--no-sandbox')
-chr_opts.add_argument('--disable-dev-shm-usage')
-driver = webdriver.Chrome(options=chr_opts)
+CHR_OPTS = Options()
+CHR_OPTS.add_argument('start-maximized')
+CHR_OPTS.add_argument('enable-automation')
+CHR_OPTS.add_argument('--disable-infobars')
+CHR_OPTS.add_argument('--disable-browser-side-navigation')
+CHR_OPTS.add_argument('--disable-gpu')
+CHR_OPTS.add_argument('--headless')
+CHR_OPTS.add_argument('--no-sandbox')
+CHR_OPTS.add_argument('--disable-dev-shm-usage')
+
 print('Running webdriver...')
 if debug:
     driver = webdriver.Chrome()
 else:
     # run headless by default
-    driver = webdriver.Chrome(options=chr_opts)
+    driver = webdriver.Chrome(options=CHR_OPTS)
 ### parametry
 def najdi_parameter(parameter): #parameter = hodnota labelu v tabulce
     hodnotaParametru=''
