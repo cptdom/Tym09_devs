@@ -121,7 +121,6 @@ def fix_price(row):
 
 def clean_dataset(a_df):
   a_df = a_df.dropna(subset=['price'])
-  a_df = a_df.drop(a_df.columns[[0]], axis=1)
   a_df['area'] = a_df['area'].apply(get_meters)
   a_df['price'] = a_df['price'].apply(fix_price)
 
