@@ -72,7 +72,9 @@ def scrape_apartment(apart_url):
   for k, v in PAR_TBL_HEADINGS.items():
     apart[v] = find_in_table(par_table, k)
 
-  apart = {k: v.strip() for (k, v) in apart.items() if isinstance(v, str)}
+  for k, v in apart.items():
+    if isinstance(v, str):
+      apart[k] = v.strip()
 
   # bool features
   for f in BOOL_FEATURES:
