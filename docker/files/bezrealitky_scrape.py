@@ -65,7 +65,9 @@ def scrape_apartment(apart_url):
   apart['description'] = apart_page.select_one('p.b-desc__info').get_text()
 
   # strip all features
-  apart = {k: v.strip() for (k, v) in apart.items() if isinstance(v, str)}
+  for k, v in apart.items():
+    if isinstance(v, str):
+      apart[k] = v.strip()
 
   # bool features
   for f in BOOL_FEATURES:
