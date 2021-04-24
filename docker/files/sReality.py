@@ -160,13 +160,16 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     page_soup=BeautifulSoup(page_source,'lxml')
 
     # wait for page to load
-    while True:
-        try_scrape_elem = page_soup.select_one('div.property-title > h1 > span > span')
-        if not try_scrape_elem:
-            time.sleep(2)
-            page_soup = BeautifulSoup(driver.page_source,'lxml')
-        else:
+    max_tries = 10
+    j = 0
+    while j < max_tries:
+        time.sleep(2)
+        if page_soup.select_one('div.property-title'):
             break
+        page_soup = BeautifulSoup(driver.page_source, 'lxml')
+        j = j + 1
+    if j == max_tries:
+        break # if max tries reached - skip apartment
 
     apart['title'] =            page_soup.select_one('div.property-title > h1 > span > span').get_text()
     apart['address'] =          page_soup.select_one('span.location-text').get_text()
