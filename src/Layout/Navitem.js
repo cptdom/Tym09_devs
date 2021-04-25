@@ -4,7 +4,7 @@ import {NavLink} from 'react-router-dom';
 
 const navitem = (props) => {
     return (
-        <li>{props.children}</li>
+        <li onClick={props.clicked}>{props.children}</li>
     )
 }
 

@@ -2,9 +2,29 @@ import React from 'react';
 import Navitem from './Navitem';
 import './Navbar.css';
 import {NavLink} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 
 const navbar = (props) => {
+
+    
+        
+    const loggedPanel  = 
+        <div className="RightPanel">
+            <Navitem>Profil</Navitem>
+            <Navitem clicked={props.onLogin}>Odhlásit</Navitem>
+        </div>;
+   
+    
+    const unloggedPanel  = 
+        <div className="RightPanel">
+            <Navitem clicked={props.onLogin}>Přihlášení</Navitem>
+            <Navitem>Registrace</Navitem>
+        </div>;
+    
+
+
+
     return (
         <div className="Navbar">
             <div className="LeftPanel">
@@ -16,13 +36,33 @@ const navbar = (props) => {
                 <Navitem>Kontakt</Navitem>
             </div>
             
-            <div className="RightPanel">
-                <Navitem>Příhlášení</Navitem>
+            {props.lgn
+            ? loggedPanel
+            : unloggedPanel}
+
+
+            {/* <div className="RightPanel">
+                <Navitem>Přihlášení</Navitem>
                 <Navitem>Registrace</Navitem>
-            </div>
+            </div> */}
             
         </div>
     )
 }
 
-export default navbar;
+//REDUX STATE FOR DUMMY LOGIN/LOGOUT
+
+const mapStateToProps = state => {
+    return {
+        lgn: state.logged
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogin: () => dispatch({type: 'SWITCH_LOGIN_STATUS'}),
+    }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(navbar);

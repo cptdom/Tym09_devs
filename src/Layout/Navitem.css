@@ -3,12 +3,13 @@ li {
     font-size: 18px;
     font-weight: 300;
     height: 100%;
-    padding: 7px;
+    padding: 20px;
     transition: transform 250ms;
 }
 
 li:hover {
     transform: translateY(-10px);
+    cursor: pointer;
 }
 
 li:active {
