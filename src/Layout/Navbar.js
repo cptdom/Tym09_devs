@@ -7,12 +7,14 @@ import {connect} from 'react-redux';
 
 const navbar = (props) => {
 
+    //const check = window.confirm(window.confirm("Opravdu se chcete odhlásit?"))
+
     
         
     const loggedPanel  = 
         <div className="RightPanel">
             <Navitem>Profil</Navitem>
-            <Navitem clicked={props.onLogin}>Odhlásit</Navitem>
+            <Navitem clicked={props.onLogout}>Odhlásit</Navitem>
         </div>;
    
     
@@ -61,6 +63,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         onLogin: () => dispatch({type: 'SWITCH_LOGIN_STATUS'}),
+        onLogout: () => window.confirm("Opravdu se chcete odhlásit?") && dispatch({type: 'SWITCH_LOGIN_STATUS'}),
     }
 }
 
