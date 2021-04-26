@@ -156,6 +156,33 @@ def get_size(row):
   size = re.search(r'\d\+[\w\d]+', row)
   return size[0] if size else None
 
+def get_street(row):
+    import numpy as np
+    street = row.split(',')
+    if street is not None:
+        if 'Praha' in str(street[0]):
+            street = np.nan
+        else:
+            street = street[0]
+    return street
+
+def get_city_part(row):
+    city_part = row.split(' - ')
+    if city_part is not None:
+        if 'okres' in str(city_part[-1]) or 'Praha' in str(city_part[-1]):
+            city_part = city_part[-1].split(',')[0]
+        else:
+            city_part = city_part[-1]
+    return city_part
+
+def get_city(row):
+    import numpy as np
+    if 'Praha' in str(row):
+        city = 'Praha'
+    else:
+        city = np.nan
+    return city
+
 
 def clean_dataset(a_df):
   a_df = a_df.dropna(subset=['price'])  # drop apartments with missing price
@@ -163,6 +190,9 @@ def clean_dataset(a_df):
   a_df['area'] = a_df['area'].apply(get_meters)
   a_df['price'] = a_df['price'].apply(fix_price)
   a_df['size'] = a_df['title'].apply(get_size)
+  a_df['street'] = a_df['address'].apply(get_street)
+  a_df['city_part'] = a_df['address'].apply(get_city_part)
+  a_df['city'] = a_df['address'].apply(get_city)
 
   return a_df
 
