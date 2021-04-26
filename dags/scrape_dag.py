@@ -28,10 +28,6 @@ default_args = {
     'sreality': {
       'script': 'sReality.py',
       'out_filename': 'sreality.csv'
-    },
-    'bezrealitky': {
-      'script': 'bezrealitky_scrape.py',
-      'out_filename': 'bezrealitky.csv'
     }
   }
 }
@@ -67,12 +63,16 @@ def merge_mongo_push():
   import pandas as pd
   from airflow.providers.mongo.hooks.mongo import MongoHook
 
-  # todo merge all datasets based on scrapers definition
-  a_df = pd.read_csv(f'{default_args["local_datafolder"]}/{default_args["scrapers"]["prazskereality"]["out_filename"]}')
-  a_df.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
-  docs = a_df.to_dict('records')
+  # merge all datasets based on scrapers definition
+  df = pd.DataFrame()
+  for sname,pars in default_args['scrapers'].items():
+    df = df.append(pd.read_csv(f'{default_args["local_datafolder"]}/{pars["out_filename"]}'))
+
+  df.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
+  docs = df.to_dict('records')
 
   mongo = MongoHook(conn_id='mongo_reality')
+  # insert into 'master' collection while ignoring duplicate errors
   try:
     mongo.insert_many(
       docs=docs,
@@ -85,7 +85,7 @@ def merge_mongo_push():
   except Exception as e:
     print({'error': str(e)})
 
-  # current collection
+  # truncate 'current' collection
   mongo.delete_many(
     filter_doc={},
     mongo_collection=default_args['mongo_current_collection'],

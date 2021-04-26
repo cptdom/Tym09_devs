@@ -25,7 +25,7 @@ PAR_TBL_HEADINGS = {
 URL_BASE = 'https://www.prazskereality.cz'
 BOOL_FEATURES = ['equipment', 'basement', 'elevator', 'barrier_free', 'terrace', 'balcony']
 MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
-
+DEBUG = os.getenv('DEBUG') # parameter wont have effect in this scraper since there are very few offers anyway
 
 def get_apartment_links(url):
   soup = BeautifulSoup(requests.get(url).content, "lxml")

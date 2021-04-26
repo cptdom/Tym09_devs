@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import re
 ### selenium setup
-debug = False
+DEBUG = os.getenv('DEBUG')
 
 MAIN_URL = 'https://www.remax-czech.cz/reality/byty/prodej/praha?'
 DEBUG_URL = 'https://www.remax-czech.cz/reality/vyhledavani/?regions%5B19%5D%5B19%5D=on&regions%5B19%5D%5B27%5D=on&sale=1&types%5B4%5D=on&'
@@ -104,7 +104,7 @@ nextPageExists= True
 propertyLinks= []
 i=1
 while nextPageExists:
-    prefix = DEBUG_URL if debug else MAIN_URL
+    prefix = DEBUG_URL if DEBUG else MAIN_URL
     url = f'{prefix}stranka={i}' # Otevri URL hledani bytu
     print(f'Scraping page: {i}')
     driver.get(url) # otevri v chromu url link

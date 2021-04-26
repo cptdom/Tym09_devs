@@ -6,11 +6,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import re
 
-### selenium setup
-
-# nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
-# cesta musi byt primo k .exe
-
 CHR_OPTS = Options()
 CHR_OPTS.add_argument('start-maximized')
 CHR_OPTS.add_argument('enable-automation')
@@ -21,7 +16,7 @@ CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
 
-debug = False
+DEBUG = os.getenv('DEBUG')
 
 MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'
 DEBUG_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha-4?cena-od=0&cena-do=4000000&'
@@ -129,8 +124,7 @@ nextPageExists= True
 propertyLinks= []
 i=1
 while nextPageExists:
-    #url = '&bez-aukce=1'.format(i)
-    prefix = DEBUG_URL if debug else MAIN_URL
+    prefix = DEBUG_URL if DEBUG else MAIN_URL
     url = f'{prefix}strana={i}' # Otevri URL hledani bytu
     print(f'Scraping page: {i}')
     driver.get(url) # otevri v chromu url link
@@ -155,18 +149,14 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     url = propertyLinks[i]
     print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
     driver.get(url) # otevry link
-    time.sleep(2)
-    page_source=driver.page_source
-    page_soup=BeautifulSoup(page_source,'lxml')
-
     # wait for page to load
     max_tries = 10
     j = 0
     while j < max_tries:
         time.sleep(2)
-        if page_soup.select_one('div.property-title'):
-            break
         page_soup = BeautifulSoup(driver.page_source, 'lxml')
+        if page_soup.select_one('div.property-title'): # test by selecting element
+            break
         j = j + 1
     if j == max_tries:
         break # if max tries reached - skip apartment
