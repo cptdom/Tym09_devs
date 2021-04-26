@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import re
 ### selenium setup
-DEBUG = os.getenv('DEBUG')
+DEBUG = bool(int(os.getenv('DEBUG')))
 
 MAIN_URL = 'https://www.remax-czech.cz/reality/byty/prodej/praha?'
 DEBUG_URL = 'https://www.remax-czech.cz/reality/vyhledavani/?regions%5B19%5D%5B19%5D=on&regions%5B19%5D%5B27%5D=on&sale=1&types%5B4%5D=on&'

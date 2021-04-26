@@ -53,7 +53,7 @@ for k, v in default_args['scrapers'].items():
       network_mode='bridge',
       task_id=f'scraper_{k}',
       volumes=[f'{default_args["local_datafolder"]}:/data'],
-      environment={'OUT_FILEPATH': f'/data/{v["out_filename"]}'},
+      environment={'OUT_FILEPATH': f'/data/{v["out_filename"]}', 'DEBUG': 0},
       dag=dag
     )
   )
@@ -68,6 +68,7 @@ def merge_mongo_push():
   for sname,pars in default_args['scrapers'].items():
     df = df.append(pd.read_csv(f'{default_args["local_datafolder"]}/{pars["out_filename"]}'))
 
+  df['date_updated'] = pd.to_datetime('today').normalize()
   df.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
   docs = df.to_dict('records')
 

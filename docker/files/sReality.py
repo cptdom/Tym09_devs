@@ -16,7 +16,7 @@ CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = bool(int(os.getenv('DEBUG')))
 
 MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'
 DEBUG_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha-4?cena-od=0&cena-do=4000000&'

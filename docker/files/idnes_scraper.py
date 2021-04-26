@@ -52,7 +52,7 @@ URL_BASE = 'https://reality.idnes.cz'
 MAIN_URL = f'{URL_BASE}/s/prodej/byty/praha/'
 DEBUG_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-nad-5000000/praha/' # 127 results
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = bool(int(os.getenv('DEBUG')))
 
 def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
   head_elem = page_soup.find('dt', text=parameter)
