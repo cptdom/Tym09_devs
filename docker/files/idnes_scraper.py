@@ -1,3 +1,4 @@
+import os
 import re
 import time
 from collections import Counter
@@ -26,27 +27,32 @@ PAR_TBL_HEADINGS = {
   'Vybavení': 'equipment',
   'Výtah': 'elevator',
   'PENB': 'penb',
-  'Internet': 'internet',
-  'Roční spotřeba energie': 'annual_electricity'
+  'Internet': 'internet'
 }
 
 # in this case some features are bool, some strings > bool
-MIXED_BOOL_FEATURES = ['balcony']
+MIXED_BOOL_FEATURES = ['balcony', 'terrace']
 # bool only features - either True (checkmark) or missing
-BOOL_FEATURES = ['basement', 'internet']
+BOOL_FEATURES = ['basement', 'internet', 'elevator']
 
 ### selenium setup
 # nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
 # cesta musi byt primo k .exe
 CHR_OPTS = Options()
+CHR_OPTS.add_argument('start-maximized')
+CHR_OPTS.add_argument('enable-automation')
+CHR_OPTS.add_argument('--disable-infobars')
+CHR_OPTS.add_argument('--disable-browser-side-navigation')
+CHR_OPTS.add_argument('--disable-gpu')
 CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
 
 URL_BASE = 'https://reality.idnes.cz'
 MAIN_URL = f'{URL_BASE}/s/prodej/byty/praha/'
-# MAIN_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-nad-5000000/praha/' # 120 results
-# MAIN_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-do-2000000/praha/' # 6 results only
+DEBUG_URL = f'{URL_BASE}/s/prodej/byty/1+kk/cena-nad-5000000/praha/' # 127 results
+
+DEBUG = bool(int(os.getenv('DEBUG')))
 
 def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
   head_elem = page_soup.find('dt', text=parameter)
@@ -59,17 +65,21 @@ def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
   return None
 
 
-def get_apartment_links(url, debug=False):
+def get_apartment_links():
   print('Running webdriver...')
 
-  # run headless by default
-  driver = webdriver.Chrome('chromium.chromedriver') if debug \
-    else webdriver.Chrome('chromium.chromedriver', options=CHR_OPTS)
+  driver = webdriver.Chrome(options=CHR_OPTS)
+
+  url = DEBUG_URL if DEBUG else MAIN_URL
   nextPageExists = True
   apart_links = []
 
   driver.get(url)
+  time.sleep(25)
+  i_page = 0
   while nextPageExists:
+    i_page = i_page + 1
+    print(f'Scraping page: {i_page}')
     time.sleep(4)
     page_source = driver.page_source
     soup = BeautifulSoup(page_source, 'lxml')
@@ -84,11 +94,11 @@ def get_apartment_links(url, debug=False):
 
   driver.close()
   apart_links = list(dict.fromkeys(apart_links))  # Remove duplicates
+  print(f'Found {len(apart_links)} apartments')
   return apart_links
 
 
 def scrape_apartment(apart_url):
-  print(f'Scraping apartment: {apart_url}')
   apart = {}
 
   page_soup = BeautifulSoup(requests.get(apart_url).content, 'lxml')
@@ -124,7 +134,7 @@ def count_features(apart_links):
   all_features = []
   for link in apart_links:
     print(f'Getting features from apartment: {link}')
-    apart_page = BeautifulSoup(requests.get(link).content, 'html.parser')
+    apart_page = BeautifulSoup(requests.get(link).content, 'lxml')
     f_elems = apart_page.find_all('dt')
     features = [f.get_text() for f in f_elems]
     all_features = all_features + features
@@ -133,8 +143,8 @@ def count_features(apart_links):
 
 
 def get_meters(row):
-  metry_cislo = re.search(r'\d+', str(row))
-  return int(metry_cislo.group(0)) if metry_cislo else ""
+  metry_cislo = re.search(r'(\d)+', str(row))
+  return int(metry_cislo.group(1)) if metry_cislo else ""
 
 
 def fix_price(row):
@@ -157,13 +167,13 @@ def clean_dataset(a_df):
   return a_df
 
 
-# apart_links = list(pd.read_csv('apart_link.csv')['link'])  # cached
-apart_links = get_apartment_links(MAIN_URL)
+apart_links = get_apartment_links()
 aparts = []
 properties = []
-for link in apart_links:
+for i,link in enumerate(apart_links):
+  print(f'[{i+1}/{len(apart_links)}] Scraping apartment: {link}')
   aparts.append(scrape_apartment(link))
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("data/idnes_prague.csv")
+aparts_df.to_csv(os.getenv("OUT_FILEPATH"), index = False)

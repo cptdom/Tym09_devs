@@ -1,5 +1,5 @@
 import re
-
+import os
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
@@ -23,12 +23,12 @@ PAR_TBL_HEADINGS = {
   'Terasa': 'terrace'
 }
 URL_BASE = 'https://www.prazskereality.cz'
-BOOL_FEATURES = ['equipment', 'basement', 'elevator', 'barrier_free']
+BOOL_FEATURES = ['equipment', 'basement', 'elevator', 'barrier_free', 'terrace', 'balcony']
 MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
-
+DEBUG = bool(int(os.getenv('DEBUG'))) # parameter wont have effect in this scraper since there are very few offers anyway
 
 def get_apartment_links(url):
-  soup = BeautifulSoup(requests.get(url).content, "html.parser")
+  soup = BeautifulSoup(requests.get(url).content, "lxml")
   offers = []
   while (True):
     for offer in soup.select('div.results-list-item'):
@@ -39,8 +39,9 @@ def get_apartment_links(url):
     if (not next_btn):
       break
     next_page_lnk = URL_BASE + next_btn.attrs.get('href')
-    soup = BeautifulSoup(requests.get(next_page_lnk).content, "html.parser")
+    soup = BeautifulSoup(requests.get(next_page_lnk).content, "lxml")
 
+  print(f'Found {len(offers)} apartments')
   return offers
 
 
@@ -52,7 +53,6 @@ def find_in_table(par_table, heading):
 
 
 def scrape_apartment(apart_url):
-  print(f'Scraping apartment: {apart_url}')
   apart = {}
 
   apart_page = BeautifulSoup(requests.get(apart_url).content, 'html.parser')
@@ -71,11 +71,13 @@ def scrape_apartment(apart_url):
   for k, v in PAR_TBL_HEADINGS.items():
     apart[v] = find_in_table(par_table, k)
 
-  apart = {k: v.strip() for (k, v) in apart.items() if isinstance(v, str)}
+  for k, v in apart.items():
+    if isinstance(v, str):
+      apart[k] = v.strip()
 
   # bool features
   for f in BOOL_FEATURES:
-    apart[f] = True if f in apart.keys() and apart[f].lower() == "ano" else False
+    apart[f] = True if f in apart.keys() and apart[f] and apart[f].lower() == "ano" else False
 
   return apart
 
@@ -84,7 +86,7 @@ def count_features():
   all_features = []
   apart_links = get_apartment_links(MAIN_URL)
   for link in apart_links:
-    apart_page = BeautifulSoup(requests.get(link).content, 'html.parser')
+    apart_page = BeautifulSoup(requests.get(link).content, 'lxml')
     parameters_div = apart_page.select_one('div.main-parameters')
     if parameters_div:
       f_elems = parameters_div.find_all('dt')
@@ -101,8 +103,8 @@ def fix_price(row):
 
 def get_meters(row):
   metraz = row.split(',')[-1].strip()
-  metry_cislo = re.search(r'\d+', metraz)
-  return int(metry_cislo.group(0)) if metry_cislo else ""
+  metry_cislo = re.search(r'(\d+)', metraz)
+  return int(metry_cislo.group(1)) if metry_cislo else ""
 
 
 def get_region(row):
@@ -150,9 +152,11 @@ def clean_dataset(a_df):
 
 aparts = []
 apart_links = get_apartment_links(MAIN_URL)
-for link in apart_links:
+# apart_links = ['https://www.prazskereality.cz/v-soucasne-situaci-nabizime-bezne-prohlidky-s-rouskou-a--7358850.html']
+for i,link in enumerate(apart_links):
+  print(f'[{i+1}/{len(apart_links)}] Scraping apartment: {link}')
   aparts.append(scrape_apartment(link))
 aparts = [a for a in aparts if a]  # remove None values
 aparts_df = pd.DataFrame(aparts)
 aparts_df = clean_dataset(aparts_df)
-aparts_df.to_csv("prazskereality_prague.csv", index = False)
+aparts_df.to_csv(os.getenv("OUT_FILEPATH"), index = False)
