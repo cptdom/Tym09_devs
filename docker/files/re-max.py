@@ -47,7 +47,7 @@ def zparsuj_popis():
 def fix_price(row):
     cut_currency =  row[:-3]
     return cut_currency.replace('\xa0', '')
-    
+
 # converts area to meters as integer
 def get_meters(row):
     metry_cislo = re.search(r'^([0-9]+)', row)
@@ -66,7 +66,7 @@ def get_city(row):
 # extracts street
 def get_street(row):
     street = re.search(r'(^[ulice]+)(\s)([\w ]+)', row)
-    if street is not None: 
+    if street is not None:
         street = street.group(3)
     else:
         street = 'nan'
@@ -80,14 +80,14 @@ def clean_elevator(row):
         row = False
     else:
         row = row
-    return row 
+    return row
 
 
 def clean_basement(row):
     if row != 'null':
         row = True
     return row
-        
+
 def clean_dataset(df):
     df['area'] = df['area'].apply(get_meters)
     df['city_part'] = df['address'].apply(get_city_part)
