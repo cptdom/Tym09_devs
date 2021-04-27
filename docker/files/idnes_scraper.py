@@ -35,15 +35,7 @@ MIXED_BOOL_FEATURES = ['balcony', 'terrace']
 # bool only features - either True (checkmark) or missing
 BOOL_FEATURES = ['basement', 'internet', 'elevator']
 
-### selenium setup
-# nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
-# cesta musi byt primo k .exe
 CHR_OPTS = Options()
-CHR_OPTS.add_argument('start-maximized')
-CHR_OPTS.add_argument('enable-automation')
-CHR_OPTS.add_argument('--disable-infobars')
-CHR_OPTS.add_argument('--disable-browser-side-navigation')
-CHR_OPTS.add_argument('--disable-gpu')
 CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
@@ -68,33 +60,28 @@ def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
 def get_apartment_links():
   print('Running webdriver...')
 
+  # driver = webdriver.Chrome() if DEBUG else webdriver.Chrome(options=CHR_OPTS) # for local debug usage
   driver = webdriver.Chrome(options=CHR_OPTS)
-
   url = DEBUG_URL if DEBUG else MAIN_URL
-  nextPageExists = True
   apart_links = []
 
-  driver.get(url)
-  time.sleep(25)
   i_page = 0
-  while nextPageExists:
-    i_page = i_page + 1
+  while True:
     print(f'Scraping page: {i_page}')
-    time.sleep(4)
-    page_source = driver.page_source
-    soup = BeautifulSoup(page_source, 'lxml')
-    if soup.select('a.c-list-products__imgs'):  # Pokud na stracne existuje
-      # Zescrapuj odkazy na nemovitosti
-      for link in soup.select('a.c-list-products__imgs'):
-        apart_links.append(f'{URL_BASE}{link.get("href")}')
-      try:
-        driver.find_element_by_css_selector('a.btn.paging__next').click()
-      except:
-        nextPageExists = False
+    page_url = f'{url}/?page={i_page}' if i_page > 0 else url # first page does not have page GET parameter
+    driver.get(page_url)
+    time.sleep(6)
+    soup = BeautifulSoup(driver.page_source, 'lxml')
+    ap_list_elem = soup.select('a.c-list-products__imgs')
+    if not ap_list_elem:
+      break # no more apartments to scrape
+    for link in ap_list_elem:
+      apart_links.append(f'{URL_BASE}{link.get("href")}') # scrape apartment listing links
+    i_page = i_page + 1
 
-  driver.close()
   apart_links = list(dict.fromkeys(apart_links))  # Remove duplicates
   print(f'Found {len(apart_links)} apartments')
+  driver.quit()
   return apart_links
 
 

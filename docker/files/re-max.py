@@ -12,14 +12,7 @@ DEBUG = bool(int(os.getenv('DEBUG')))
 MAIN_URL = 'https://www.remax-czech.cz/reality/byty/prodej/praha?'
 DEBUG_URL = 'https://www.remax-czech.cz/reality/vyhledavani/?regions%5B19%5D%5B19%5D=on&regions%5B19%5D%5B27%5D=on&sale=1&types%5B4%5D=on&'
 
-# nutne zadat cestu k chromedriveru - ke stazeni zde: https://chromedriver.chromium.org/downloads (dle verze chrome)
-# cesta musi byt primo k .exe
 CHR_OPTS = Options()
-CHR_OPTS.add_argument('start-maximized')
-CHR_OPTS.add_argument('enable-automation')
-CHR_OPTS.add_argument('--disable-infobars')
-CHR_OPTS.add_argument('--disable-browser-side-navigation')
-CHR_OPTS.add_argument('--disable-gpu')
 CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
@@ -108,19 +101,19 @@ while nextPageExists:
     url = f'{prefix}stranka={i}' # Otevri URL hledani bytu
     print(f'Scraping page: {i}')
     driver.get(url) # otevri v chromu url link
-    time.sleep(3) # pockej 3 vteriny
-    page_source=driver.page_source
-    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky
-    if page_soup.select('a.pl-items__link'): # Pokud na stracne existuje a class="pl-items__link" - odkaz odkazujici na inzerat
+    time.sleep(6) # pockej 3 vteriny
+    page_soup = BeautifulSoup(driver.page_source, 'lxml')  # page_soup pro beautifulsoup nacte html otevrene stanky
+    ap_link_elem = page_soup.select('a.pl-items__link')
+    if ap_link_elem: # Pokud na stracne existuje a class="pl-items__link" - odkaz odkazujici na inzerat
         #Zescrapuj odkazy na nemovitosti
-        for link in page_soup.select('a.pl-items__link'): # projdi kazdy a.title
+        for link in ap_link_elem: # projdi kazdy a.title
             if 'Rezervace' in str(link): continue
             if 'Prodáno' in str(link): break
             propertyLinks.append('https://www.remax-czech.cz'+link.get('href')) # uloz odkaz na inzerat
         i=i+1
     else:
         nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
-driver.close()
+driver.quit()
 propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
 print(f'Found {len(propertyLinks)} apartments in {i} pages')
 ### setup
@@ -132,10 +125,10 @@ for i in range(len(propertyLinks)):  # projdi kazdy link
     url = propertyLinks[i]
     print(f'[{i + 1}/{len(propertyLinks)}] Scraping apartment: {url}')
 
+    page_soup = BeautifulSoup(requests.get(url).content, 'lxml')
     if page_soup.find('h2', text='Nemovitost nenalezena'): # aparts that disappeared during the scraping process
         continue
 
-    page_soup = BeautifulSoup(requests.get(url).content, 'lxml')
     for e in page_soup.findAll('br'):
         e.extract()
     # apart['title'] =           page_soup.select_one('h4.property-title > h1 > span > span').get_text().strip()

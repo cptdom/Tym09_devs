@@ -7,11 +7,6 @@ from selenium.webdriver.chrome.options import Options
 import re
 
 CHR_OPTS = Options()
-CHR_OPTS.add_argument('start-maximized')
-CHR_OPTS.add_argument('enable-automation')
-CHR_OPTS.add_argument('--disable-infobars')
-CHR_OPTS.add_argument('--disable-browser-side-navigation')
-CHR_OPTS.add_argument('--disable-gpu')
 CHR_OPTS.add_argument('--headless')
 CHR_OPTS.add_argument('--no-sandbox')
 CHR_OPTS.add_argument('--disable-dev-shm-usage')
@@ -123,21 +118,19 @@ driver = webdriver.Chrome(options=CHR_OPTS)
 nextPageExists= True
 propertyLinks= []
 i=1
-while nextPageExists:
-    prefix = DEBUG_URL if DEBUG else MAIN_URL
-    url = f'{prefix}strana={i}' # Otevri URL hledani bytu
+while True:
     print(f'Scraping page: {i}')
-    driver.get(url) # otevri v chromu url link
-    time.sleep(3) # pockej 3 vteriny
-    page_source=driver.page_source
-    page_soup=BeautifulSoup(page_source,'lxml') # page_soup pro beautifulsoup nacte html otevrene stanky
-    if page_soup.select('a.title'): # Pokud na stracne existuje a class="title" - nazev inzeratu obsahujici href na inzerat
-        #Zescrapuj odkazy na nemovitosti
-        for link in page_soup.select('a.title'): # projdi kazdy a.title
-            propertyLinks.append('https://sreality.cz'+link.get('href')) # uloz odkaz na inzerat
-        i=i+1
-    else:
-        nextPageExists = False # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
+    prefix = DEBUG_URL if DEBUG else MAIN_URL
+    url = f'{prefix}strana={i}'  # Otevri URL hledani bytu
+    driver.get(url)  # otevri v chromu url link
+    time.sleep(6)
+    page_soup = BeautifulSoup(driver.page_source, 'lxml')  # page_soup pro beautifulsoup nacte html otevrene stanky
+    title_elem = page_soup.select('a.title')
+    if not title_elem:  # Pokud na stracne existuje nazev inzeratu obsahujici href na inzerat
+        break  # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
+    for link in title_elem:  # projdi kazdy a.title
+        propertyLinks.append('https://sreality.cz' + link.get('href'))  # uloz odkaz na inzerat
+    i = i + 1
 
 propertyLinks = list( dict.fromkeys(propertyLinks) ) # odstan duplicity
 print(f'Found {len(propertyLinks)} apartments in {i} pages')
@@ -148,7 +141,7 @@ for i in range(len(propertyLinks)): # projdi kazdy link
     apart = {}
     url = propertyLinks[i]
     print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
-    driver.get(url) # otevry link
+    driver.get(url) # otevri link
     # wait for page to load
     max_tries = 10
     j = 0
