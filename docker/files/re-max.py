@@ -127,47 +127,48 @@ print(f'Found {len(propertyLinks)} apartments in {i} pages')
 # propertyLinks = ['https://www.remax-czech.cz/reality/detail/310428/prodej-bytu-2-1-v-druzstevnim-vlastnictvi-57-m2-praha-6-brevnov']
 properties = []
 # Přiřaď nemovitosti atribut
-for i in range(len(propertyLinks)): # projdi kazdy link
+for i in range(len(propertyLinks)):  # projdi kazdy link
     apart = {}
     url = propertyLinks[i]
-    print(f'[{i+1}/{len(propertyLinks)}] Scraping apartment: {url}')
+    print(f'[{i + 1}/{len(propertyLinks)}] Scraping apartment: {url}')
+
+    if page_soup.find('h2', text='Nemovitost nenalezena'): # aparts that disappeared during the scraping process
+        continue
+
     page_soup = BeautifulSoup(requests.get(url).content, 'lxml')
     for e in page_soup.findAll('br'):
         e.extract()
-    #apart['title'] =           page_soup.select_one('h4.property-title > h1 > span > span').get_text().strip()
-    #apart['address'] =         page_soup.select_one('span.location-text').get_text().strip()
-    apart['area'] =             najdi_parameter('Celková plocha:')
+    # apart['title'] =           page_soup.select_one('h4.property-title > h1 > span > span').get_text().strip()
+    apart['area'] = najdi_parameter('Celková plocha:')
     price_elem = page_soup.select_one('div.mortgage-calc__RE-price > p')
-    apart['price'] =            price_elem.get_text().strip() if price_elem else None
-    apart['description'] =      page_soup.select_one('div.pd-base-info__content-collapse-inner').get_text().strip()
-    apart['basement'] =         najdi_parameter('Sklep:')
-    apart['building_type']=     najdi_parameter('Druh objektu:')
-    apart['penb'] =             najdi_parameter('Energetická náročnost budovy:')
-    apart['floor'] =            najdi_parameter('Číslo podlaží:')
-    apart['floor_max'] =        najdi_parameter('Počet podlaží v objektu:')
-    apart['state'] =            najdi_parameter('Stav objektu:')
-    apart['internet'] =         najdi_parameter('Telekomunikace:')
-    apart['equipment'] =        najdi_parameter('Vybavení:')
-    apart['elevator'] =         najdi_parameter('Výtah:')
-    apart['heating'] =          najdi_parameter('Topení:')
-    apart['electricity'] =      najdi_parameter('Elektřina:')
-    apart['annual_electricity']= najdi_parameter('Měrná vypočtená roční spotřeba energie v kWh/m²/rok:')
-    apart['link'] =             propertyLinks[i]
-    apart['gas'] =              najdi_parameter('Plyn:')
-    apart['loggia'] =           najdi_parameter('Lodžie:')
-    apart['umistneni_objektu'] =najdi_parameter('Umístění objektu:')
-    apart['doprava'] =          najdi_parameter('Doprava:')
-    apart['voda'] =             najdi_parameter('Voda:')
-    apart['odpad'] =            najdi_parameter('Odpad:')
-    apart['obcanska_vybavenost']= najdi_parameter('Občanská vybavenost:')
-    apart['address'] =          page_soup.select_one('h2.pd-header__address').get_text().strip()
-    apart['size']   =           najdi_parameter('Dispozice:')
+    apart['price'] = price_elem.get_text().strip() if price_elem else None
+    apart['description'] = page_soup.select_one('div.pd-base-info__content-collapse-inner').get_text().strip()
+    apart['basement'] = najdi_parameter('Sklep:')
+    apart['building_type'] = najdi_parameter('Druh objektu:')
+    apart['penb'] = najdi_parameter('Energetická náročnost budovy:')
+    apart['floor'] = najdi_parameter('Číslo podlaží:')
+    apart['floor_max'] = najdi_parameter('Počet podlaží v objektu:')
+    apart['state'] = najdi_parameter('Stav objektu:')
+    apart['internet'] = najdi_parameter('Telekomunikace:')
+    apart['equipment'] = najdi_parameter('Vybavení:')
+    apart['elevator'] = najdi_parameter('Výtah:')
+    apart['heating'] = najdi_parameter('Topení:')
+    apart['electricity'] = najdi_parameter('Elektřina:')
+    apart['annual_electricity'] = najdi_parameter('Měrná vypočtená roční spotřeba energie v kWh/m²/rok:')
+    apart['link'] = propertyLinks[i]
+    apart['gas'] = najdi_parameter('Plyn:')
+    apart['loggia'] = najdi_parameter('Lodžie:')
+    apart['umistneni_objektu'] = najdi_parameter('Umístění objektu:')
+    apart['doprava'] = najdi_parameter('Doprava:')
+    apart['voda'] = najdi_parameter('Voda:')
+    apart['odpad'] = najdi_parameter('Odpad:')
+    apart['obcanska_vybavenost'] = najdi_parameter('Občanská vybavenost:')
+    apart['address'] = page_soup.select_one('h2.pd-header__address').get_text().strip()
+    apart['size'] = najdi_parameter('Dispozice:')
     properties.append(apart)
 df = pd.DataFrame(properties)
-df = df.dropna(subset = ['price'])
+df = df.dropna(subset=['price'])
 df = df.drop(df[df['price'] == 'Info o ceně u RK'].index)
 df['floor'] = df['floor'].apply(lambda x: re.findall(r'\d', x)[0])
 clean_dataset(df)
-df.to_csv(os.getenv("OUT_FILEPATH"), index = False)
-driver.quit()
-
+df.to_csv(os.getenv("OUT_FILEPATH"), index=False)
