@@ -7,10 +7,6 @@ import {connect} from 'react-redux';
 
 const navbar = (props) => {
 
-    //const check = window.confirm(window.confirm("Opravdu se chcete odhlásit?"))
-
-    
-        
     const loggedPanel  = 
         <div className="RightPanel">
             <Navitem>Profil</Navitem>
@@ -32,10 +28,10 @@ const navbar = (props) => {
             <div className="LeftPanel">
                 
             <div className="Logo"><NavLink to='/' style={{ textDecoration: 'none', color: 'snow' }} exact>RealQuik</NavLink></div>
-                <Navitem>Produkt</Navitem>
-                <Navitem>O nás</Navitem>
-                <Navitem>Ceník</Navitem>
-                <Navitem>Kontakt</Navitem>
+                <Navitem pathTo='/product'>Produkt</Navitem>
+                <Navitem pathTo='/about'>O nás</Navitem>
+                <Navitem pathTo='/pricing'>Ceník</Navitem>
+                <Navitem pathTo='/contact'>Kontakt</Navitem>
             </div>
             
             {props.lgn

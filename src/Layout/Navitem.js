@@ -3,8 +3,18 @@ import './Navitem.css';
 import {NavLink} from 'react-router-dom';
 
 const navitem = (props) => {
+
+    const linkItem = <NavLink to={props.pathTo} exact style={{ textDecoration: 'none', color: 'snow' }}><li onClick={props.clicked}>{props.children}</li></NavLink>
+    const unlinked = <li onClick={props.clicked}>{props.children}</li>
+    
+    
     return (
-        <li onClick={props.clicked}>{props.children}</li>
+        <React.Fragment>
+        {props.pathTo
+        ? linkItem
+        : unlinked}
+        </React.Fragment>
+        
     )
 }
 
