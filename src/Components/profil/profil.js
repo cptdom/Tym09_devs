@@ -2,12 +2,19 @@ import React from 'react';
 import './profil.css';
 import Store from '../../store/store';
 import { Redirect } from 'react-router-dom';
+import Trackers from './trackers';
+import SetWindow from './setWindow';
 
 const profil = (props) => {
 
     let state = Store.getState()
-    let content =  <div className="Profil"><p>profil</p></div>
-    let gtfo = <Redirect to='/'/>
+    const content = 
+        <div className="Profil">
+            <Trackers/>
+            <SetWindow/>
+        </div>
+
+    const gtfo = <Redirect to='/'/>
                 
 
     return (

@@ -1,18 +1,17 @@
 import './App.css';
 import Layout from './Layout/Layout';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Intro from './Components/navbar_left/Intro';
 import About from './Components/navbar_left/About';
 //import Pricing from './Components/navbar_left/Pricing';
 import Contact from './Components/navbar_left/Contact';
 import Product from './Components/navbar_left/Product';
 import Profile from './Components/profil/profil';
-import Store from './store/store';
 
 
 function App() {
 
-  let state = Store.getState()
+  
 
   return (
       <Layout>
