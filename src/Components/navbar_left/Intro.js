@@ -1,6 +1,6 @@
 import React from 'react';
 import './Intro.css';
-import Product from './Product';
+//import Product from './Product';
 
 const intro = (props) => {
     return (

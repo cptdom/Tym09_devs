@@ -9,8 +9,8 @@ const navbar = (props) => {
 
     const loggedPanel  = 
         <div className="RightPanel">
-            <Navitem>Profil</Navitem>
-            <Navitem clicked={props.onLogout}>Odhlásit</Navitem>
+            <Navitem pathTo='/profile' redirect='/'>Profil</Navitem>
+            <Navitem clicked={props.onLogout} pathTo='/'>Odhlásit</Navitem>
         </div>;
    
     
@@ -19,7 +19,6 @@ const navbar = (props) => {
             <Navitem clicked={props.onLogin}>Přihlášení</Navitem>
             <Navitem>Registrace</Navitem>
         </div>;
-    
 
 
 
@@ -30,7 +29,7 @@ const navbar = (props) => {
             <div className="Logo"><NavLink to='/' style={{ textDecoration: 'none', color: 'snow' }} exact>RealQuik</NavLink></div>
                 <Navitem pathTo='/product'>Produkt</Navitem>
                 <Navitem pathTo='/about'>O nás</Navitem>
-                <Navitem pathTo='/pricing'>Ceník</Navitem>
+                {/* <Navitem pathTo='/pricing'>Ceník</Navitem> */}
                 <Navitem pathTo='/contact'>Kontakt</Navitem>
             </div>
             
