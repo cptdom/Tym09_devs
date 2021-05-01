@@ -4,7 +4,7 @@ import './singleTracker.css';
 const singleTracker = (props) => {
     return (
         <div className="singleTracker">
-            <p>Tracker</p>
+            <p>{props.name}</p>
         </div>
     )
 }

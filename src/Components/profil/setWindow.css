@@ -3,5 +3,43 @@
     height: 90%;
     border: 3px solid black;
     margin: auto;
+    display: flex;
+    flex-direction: column;
 
+}
+
+.SetWindow label {
+    width: 450px;
+    margin-top: 10px;
+}
+
+.SetWindow form {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    margin-top: 5%;
+    margin-left: 5%;
+    
+
+}
+
+.SetWindow input, select {
+    margin-right: 100px;
+    float: right;
+    font-family: inherit;
+
+}
+
+.Immutable {
+    cursor: not-allowed;
+    background-color: #ccc;
+}
+
+.Launch {
+    background-color: cornflowerblue;
+    color: snow;
+    width: 50px;
+    height: 30px;
+    margin-top: 50px;
+    margin-left: 30%;
 }
