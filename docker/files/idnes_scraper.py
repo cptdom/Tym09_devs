@@ -130,9 +130,8 @@ def count_features(apart_links):
 
 
 def get_meters(row):
-  metry_cislo = re.search(r'(\d)+', str(row))
-  return int(metry_cislo.group(1)) if metry_cislo else ""
-
+  metry_cislo = re.search(r'\d*', str(row))
+  return int(metry_cislo.group(0)) if metry_cislo else ""
 
 def fix_price(row):
   cut_currency = ''.join(row.split(' ')[0:-1])
