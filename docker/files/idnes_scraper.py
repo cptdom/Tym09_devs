@@ -128,10 +128,9 @@ def count_features(apart_links):
 
   return Counter(all_features), apart_links
 
-
 def get_meters(row):
-  metry_cislo = re.search(r'\d*', str(row))
-  return int(metry_cislo.group(0)) if metry_cislo else ""
+  metry_cislo = re.search(r'(\d+)', str(row))
+  return int(metry_cislo.group(1)) if metry_cislo else ""
 
 def fix_price(row):
   cut_currency = ''.join(row.split(' ')[0:-1])
@@ -183,7 +182,8 @@ def clean_dataset(a_df):
   return a_df
 
 
-apart_links = get_apartment_links()
+# apart_links = get_apartment_links()
+apart_links = ['https://reality.idnes.cz/detail/prodej/byt/praha-2-moravska/607981bacc2a1e180d0f52a2/']
 aparts = []
 properties = []
 for i,link in enumerate(apart_links):
