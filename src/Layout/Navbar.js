@@ -13,7 +13,7 @@ const navbar = (props) => {
             <Navitem clicked={props.onLogout} pathTo='/'>Odhlásit</Navitem>
         </div>;
    
-    
+
     const unloggedPanel  = 
         <div className="RightPanel">
             <Navitem clicked={props.onLogin}>Přihlášení</Navitem>
@@ -57,7 +57,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogin: () => dispatch({type: 'SWITCH_LOGIN_STATUS'}),
+        onLogin: () => dispatch({type: 'SWITCH_LOGIN_STATUS'}) && window.alert("Úspěšně jste se přihlásil/a"),
         onLogout: () => window.confirm("Opravdu se chcete odhlásit?") && dispatch({type: 'SWITCH_LOGIN_STATUS'}),
     }
 }
