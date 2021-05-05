@@ -1,6 +1,10 @@
 const fs = require('fs');
+const request = require('request');
+let obj={ 
+    locations:[]
+}
 
-let rawdatalokace = fs.readFileSync('locationsTemp.json');
+let rawdatalokace = fs.readFileSync('locations.json');
 let rawdatametro = fs.readFileSync('metrolokace.json');
 let locations = JSON.parse(rawdatalokace).locations;
 let metra = JSON.parse(rawdatametro).features;
@@ -37,7 +41,23 @@ for (let i = 0; i < locations.length; i++){
             nejblizsiMetroLong = currentMetroLong
             nejblizsiMetroNazev = metra[j].properties.UZEL_NAZEV
         }
-
     }
-    console.log("Pro byt na " + locations[i].loc + " je nejblizsi metro " + nejblizsiMetroNazev + ' ' + nejblizsiMetroLat + ' ' + nejblizsiMetroLong  )
+    request(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${propertyLat},${propertyLong}&destinations=${nejblizsiMetroLat},${nejblizsiMetroLong}&mode=transit&departure_time=1620111925&key=`, (err, res) => {
+        if (err) { return console.log(err) }
+        let response = (JSON.parse(res.body))
+        console.log(response)
+        console.log(response.rows)
+        //obj.push(response)
+        obj.locations.push(response)
+
+    })
 } 
+
+setTimeout(function () {
+    console.log("storing data") 
+    let jsondata = JSON.stringify(obj);
+    fs.writeFile("locationDistances.json", jsondata, "utf8", (err) => {
+        if (err) throw err;
+        console.log("The file has been saved!");
+    });
+}, 5000)
