@@ -27,6 +27,11 @@
     color: black;
 }
 
+.Addnew:hover {
+    cursor: pointer;
+    background-color: darkcyan;
+}
+
 .Placeholder {
     position: absolute;
     margin-left: 310px;
@@ -35,8 +40,4 @@
     font-size: 24px;
     color: cornflowerblue;
     text-align: center;
-}
-
-.OutputFrame {
-
 }

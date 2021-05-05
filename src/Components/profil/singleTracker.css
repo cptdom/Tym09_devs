@@ -10,4 +10,12 @@
 .singleTracker p {
     margin: auto;
     text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    color: cornflowerblue;
+}
+
+.singleTracker:hover {
+    background-color: #cecece;
+    cursor: pointer;
 }

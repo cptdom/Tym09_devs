@@ -13,7 +13,7 @@ const Profil = (props) => {
         displayNewTracker: false,
     })
 
-    const newTrackerHandler = (event) => {
+    const newTrackerHandler = () => {
         changeState((prevState) => ({
             ...prevState,
             displayNewTracker: !state.displayNewTracker,

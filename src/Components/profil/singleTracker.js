@@ -3,7 +3,7 @@ import './singleTracker.css';
 
 const singleTracker = (props) => {
     return (
-        <div className="singleTracker">
+        <div className="singleTracker" onClick={props.clicked}>
             <p>{props.name}</p>
         </div>
     )

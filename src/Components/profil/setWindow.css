@@ -62,3 +62,13 @@
     background-color: snow;
     color: black;
 }
+
+.Launch:hover {
+    cursor: pointer;
+    background-color: darkcyan;
+}
+
+.Close:hover {
+    cursor: pointer;
+    background-color: sandybrown;
+}
