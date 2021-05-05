@@ -25,7 +25,9 @@ const Trackers = (props) => {
     return (
         <div className="Trackers">
             <h3>Trackery</h3>
-            <p onClick={listingHandler}>obnovit seznam</p>
+            {console.log(state.length)}
+            <p className="Refresh"onClick={listingHandler}>obnovit seznam</p>
+            {Object.keys(state).length>0 ? null : <p className="RefreshAlert">Obnovte seznam</p>}
             {Object.keys(state).map(item => (<SingleTracker name={state[item].name} key={state[item].name}/>))}
         </div>
     )

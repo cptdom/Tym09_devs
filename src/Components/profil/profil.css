@@ -29,8 +29,12 @@
 
 .Placeholder {
     position: absolute;
-    margin-left: 500px;
+    margin-left: 310px;
     margin-top: 300px;
+    font-weight: 600;
+    font-size: 24px;
+    color: cornflowerblue;
+    text-align: center;
 }
 
 .OutputFrame {

@@ -11,10 +11,9 @@
     overflow-y: auto;
 }
 
-.Trackers p {
+.Refresh {
     font-size: 12px;
     text-decoration: underline;
-    margin: 0;
 }
 
 
@@ -33,4 +32,14 @@
 
 .Trackers::-webkit-scrollbar-thumb {
     background-color: cornflowerblue;
+  }
+
+.RefreshAlert {
+    position: relative;
+    cursor: default;
+    text-decoration: none;
+    color: cornflowerblue;
+    margin: 100px auto;
+    font-size: 24px;
+    font-weight: 600;
   }
