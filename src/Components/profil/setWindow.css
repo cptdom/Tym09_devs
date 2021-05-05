@@ -37,17 +37,28 @@
     background-color: #ccc;
 }
 
-.Launch {
-    background-color: cornflowerblue;
+.Launch, .Close {
     color: snow;
     font-size: 20px;
     width: 150px;
     height: 35px;
-    margin-top: 50px;
-    margin-left: 30%;
+    
 }
 
-.Launch:active {
+.Launch {
+    margin-top: 50px;
+    margin-left: 30%;
+    background-color: cornflowerblue;
+}
+
+.Close {
+    position: absolute;
+    margin-left: 425px;
+    margin-top: 20px;
+    background-color: salmon;
+}
+
+.Launch:active, .Close:active {
     background-color: snow;
     color: black;
 }

@@ -26,7 +26,7 @@ const Profil = (props) => {
             <Trackers/>
             <button className="Addnew" onClick={newTrackerHandler}>Přidat nový</button>
             <div className="OutputFrame">
-                {state.displayNewTracker ? <SetWindow/> : <div className="Placeholder">Vyberte tracker</div>}
+                {state.displayNewTracker ? <SetWindow closeClick={newTrackerHandler}/> : <div className="Placeholder">Vyberte tracker</div>}
             </div>
             
         </div>

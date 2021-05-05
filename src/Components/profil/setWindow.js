@@ -110,6 +110,7 @@ const SetWindow = (props) => {
                 </label>
             </form>
             <button className="Launch" onClick={buttonHandler}>Start</button>
+            <button className="Close" onClick={props.closeClick}>Zavřít</button>
         </div>
     )
 }
