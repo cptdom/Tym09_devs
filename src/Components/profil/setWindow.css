@@ -1,8 +1,10 @@
 .SetWindow {
+    position: absolute;
+    margin-left: 270px;
+    margin-top: 35px;
     width: 600px;
     height: 90%;
     border: 3px solid black;
-    margin: auto;
     display: flex;
     flex-direction: column;
 
@@ -38,8 +40,14 @@
 .Launch {
     background-color: cornflowerblue;
     color: snow;
-    width: 50px;
-    height: 30px;
+    font-size: 20px;
+    width: 150px;
+    height: 35px;
     margin-top: 50px;
     margin-left: 30%;
+}
+
+.Launch:active {
+    background-color: snow;
+    color: black;
 }

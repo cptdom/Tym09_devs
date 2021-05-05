@@ -1,8 +1,10 @@
 .Trackers {
+    position: absolute;
     width: 150px;
-    height: 90%;
+    height: 80%;
     border: 3px solid black;
-    margin: auto;
+    margin-top: 35px;
+    margin-left: 35px;
     display: block;
     flex-direction: column;
     text-align: center;
@@ -14,6 +16,7 @@
     text-decoration: underline;
     margin: 0;
 }
+
 
 .Trackers p:hover {
     cursor: pointer;

@@ -21,6 +21,7 @@ const SetWindow = (props) => {
          
     })
 
+    //TODO: remove when tested on Mongo
     useEffect(() => {
         console.log(state)
     })

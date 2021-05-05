@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './profil.css';
 import Store from '../../store/store';
 import { Redirect } from 'react-router-dom';
 import Trackers from './trackers';
 import SetWindow from './setWindow';
 
-const profil = (props) => {
+const Profil = (props) => {
 
-    let state = Store.getState()
+    let loginState = Store.getState()
+
+    const [state, changeState] = useState({
+        displayNewTracker: false,
+    })
+
+    const newTrackerHandler = (event) => {
+        changeState((prevState) => ({
+            ...prevState,
+            displayNewTracker: !state.displayNewTracker,
+        }))
+    }
+
+
     const content = 
         <div className="Profil">
             <Trackers/>
-            <SetWindow/>
+            <button className="Addnew" onClick={newTrackerHandler}>Přidat nový</button>
+            <div className="OutputFrame">
+                {state.displayNewTracker ? <SetWindow/> : <div className="Placeholder">Vyberte tracker</div>}
+            </div>
+            
         </div>
 
     const gtfo = <Redirect to='/'/>
@@ -19,11 +36,11 @@ const profil = (props) => {
 
     return (
         <React.Fragment>
-        {state.logged
+        {loginState.logged
         ? content
         : gtfo}
         </React.Fragment>
     )
 }
 
-export default profil;
+export default Profil;

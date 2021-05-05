@@ -10,3 +10,25 @@
     margin-bottom: 20vh;
     box-shadow: 1px 3px 1px 4px #cecece;
 }
+
+.Addnew {
+    position: absolute;
+    font-size: 20px;
+    background-color: cornflowerblue;
+    margin-left: 38px;
+    margin-top: 635px;
+    width: 150px;
+    height: 35px;
+    color: snow;
+}
+
+.Addnew:active {
+    background-color: snow;
+    color: black;
+}
+
+.Placeholder {
+    position: absolute;
+    margin-left: 500px;
+    margin-top: 300px;
+}
