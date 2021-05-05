@@ -10,7 +10,6 @@ const Trackers = (props) => {
 
     const [state, changeState] = useState({
         data: [],
-        trackerClicked: null,
     })
 
     useEffect(() => {
@@ -41,12 +40,6 @@ const Trackers = (props) => {
         })
     }
 
-    const chooseTrackerHandler = (item) => {
-        changeState((prevState)=>({
-            ...prevState,
-            trackerClicked: item,
-        }))
-    }
 
     //TODO: REMOVE WHEN NOT NEEDED
     const checkHandler = () => {
@@ -56,13 +49,13 @@ const Trackers = (props) => {
 
 
     return (
-        <div className="Trackers">
+        <div className="Trackers" dataTransfer={state.trackerClicked}>
             <h3 onClick={checkHandler}>Trackery</h3>
             <p className="Refresh"onClick={listingHandler}>obnovit seznam</p>
             {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam</p>}
             {Object.keys(state.data).map(item => (
                 <SingleTracker name={state.data[item].name} key={state.data[item].name}
-                    clicked={() => chooseTrackerHandler(item)}/>
+                    clicked={() => props.passed(state.data[item])}/>
                 ))}
         </div>
     )

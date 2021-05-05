@@ -11,6 +11,7 @@ const Profil = (props) => {
 
     const [state, changeState] = useState({
         displayNewTracker: false,
+        dataFromChild: null,
     })
 
     const newTrackerHandler = () => {
@@ -18,12 +19,20 @@ const Profil = (props) => {
             ...prevState,
             displayNewTracker: !state.displayNewTracker,
         }))
+        console.log(state)
+    }
+
+    const showTrackerHandler = (data) => {
+        changeState((prevState) => ({
+            ...prevState,
+            dataFromChild: data,
+        }))
     }
 
 
     const content = 
         <div className="Profil">
-            <Trackers/>
+            <Trackers passed={showTrackerHandler}/>
             <button className="Addnew" onClick={newTrackerHandler}>Přidat nový</button>
             <div className="OutputFrame">
                 {state.displayNewTracker ? <SetWindow closeClick={newTrackerHandler}/> : <div className="Placeholder">Vyberte tracker
