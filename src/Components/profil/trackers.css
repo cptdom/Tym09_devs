@@ -3,9 +3,10 @@
     height: 90%;
     border: 3px solid black;
     margin: auto;
-    display: flex;
+    display: block;
     flex-direction: column;
     text-align: center;
+    overflow-y: auto;
 }
 
 .Trackers p {
@@ -17,3 +18,16 @@
 .Trackers p:hover {
     cursor: pointer;
 }
+
+.Trackers::-webkit-scrollbar {
+    width: 10px;
+    background-color: snow;
+  }
+
+.Trackers::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.Trackers::-webkit-scrollbar-thumb {
+    background-color: cornflowerblue;
+  }
