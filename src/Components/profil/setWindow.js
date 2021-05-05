@@ -43,8 +43,10 @@ const SetWindow = (props) => {
         })
         .catch(error => {
             console.log(`An error occured with the following description: ${error}`)
+            window.alert(`Někde se stala chyba, tracker ${toPush.name} nebyl uložen.`)
         })
-        
+        window.confirm(`Opravdu chcete odeslat tracker ${toPush.name}?`) && props.closeClick()
+        window.alert(`Tracker ${toPush.name} odeslán.`)
 
     }
 
