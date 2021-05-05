@@ -7,3 +7,13 @@
     flex-direction: column;
     text-align: center;
 }
+
+.Trackers p {
+    font-size: 12px;
+    text-decoration: underline;
+    margin: 0;
+}
+
+.Trackers p:hover {
+    cursor: pointer;
+}

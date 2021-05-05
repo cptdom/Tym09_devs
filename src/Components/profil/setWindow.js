@@ -21,9 +21,9 @@ const SetWindow = (props) => {
          
     })
 
-    // useEffect(() => {
-    //     console.log(state)
-    // })
+    useEffect(() => {
+        console.log(state)
+    })
 
 
     const changeHandler = (event) => {
