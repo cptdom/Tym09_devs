@@ -1,9 +1,0 @@
-.Trackers {
-    width: 150px;
-    height: 90%;
-    border: 3px solid black;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
