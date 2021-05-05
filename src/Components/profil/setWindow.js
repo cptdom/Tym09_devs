@@ -36,10 +36,10 @@ const SetWindow = (props) => {
 
     const buttonHandler = (event) => {
         event.preventDefault();
-        const toPush = state;
-        axios.post('/realquik.json', state)
+        const toPush = Object.assign(state);
+        axios.post('/realquik.json', toPush)
         .then( response => {
-            console.log('Data sent');
+            console.log(`Data sent successfully with the following message: ${response}`);
         })
         .catch(error => {
             console.log(`An error occured with the following description: ${error}`)
