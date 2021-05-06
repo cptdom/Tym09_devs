@@ -7,6 +7,7 @@
     border: 3px solid black;
     display: flex;
     flex-direction: column;
+    border-radius: 15px;
 
 }
 
@@ -42,6 +43,7 @@
     font-size: 20px;
     width: 150px;
     height: 35px;
+    transition: 0.3s all;
     
 }
 
@@ -49,6 +51,7 @@
     margin-top: 50px;
     margin-left: 30%;
     background-color: cornflowerblue;
+    border-radius: 5px;
 }
 
 .Close {
@@ -56,6 +59,8 @@
     margin-left: 425px;
     margin-top: 20px;
     background-color: salmon;
+    border-radius: 5px;
+    
 }
 
 .Launch:active, .Close:active {
@@ -65,7 +70,7 @@
 
 .Launch:hover {
     cursor: pointer;
-    background-color: darkcyan;
+    background-color: rgb(56, 83, 133);
 }
 
 .Close:hover {

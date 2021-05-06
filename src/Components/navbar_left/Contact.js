@@ -4,9 +4,9 @@ import './Contact.css';
 const contact = (props) => {
     return (
         <div className="Contact">
-            <p>Kontakt</p>
+            <h1>realquik@dummy.com</h1>
         </div>
-    );
-};
+    )
+}
 
 export default contact;

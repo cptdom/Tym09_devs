@@ -18,7 +18,7 @@ const Trackers = (props) => {
         .then((response) => {
             changeState((prevState) => ({
                 ...prevState,
-                data: response.data,
+                data: response.data ? response.data : [],
             }));
         })
         .catch((error) => {
@@ -34,7 +34,7 @@ const Trackers = (props) => {
         .then((response) => {
             changeState((prevState) => ({
                 ...prevState,
-                data: response.data,
+                data: response.data ? response.data : [],
             }));
         })
         .catch((error) => {
@@ -54,7 +54,7 @@ const Trackers = (props) => {
         <div className="Trackers" dataTransfer={state.trackerClicked}>
             <h3>Trackery</h3>
             <p className="Refresh" onClick={listingHandler}>obnovit seznam</p>
-            {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam</p>}
+            {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam nebo vytvořte tracker</p>}
             {Object.keys(state.data).map(item => (
                 <SingleTracker name={state.data[item].name} key={state.data[item].name}
                     clicked={() => props.passed(state.data[item], item)}/>

@@ -1,21 +1,29 @@
 .singleTracker {
     width: 120px;
     height: 120px;
-    border: 2px solid black;
+    border: 1px solid grey;
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
+    border-radius: 15px;
+    font-weight: 600;
+
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    transition: 0.3s all;
 }
 
 .singleTracker p {
     margin: auto;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: inherit;
     font-size: 16px;
     color: cornflowerblue;
+    padding-left: 4px;
+    padding-right: 4px;
 }
 
 .singleTracker:hover {
     background-color: #cecece;
     cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);;
 }

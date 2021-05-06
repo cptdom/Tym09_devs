@@ -1,26 +1,156 @@
 .About {
     position: absolute;
-    width: 600px;
-    height: 500px;
-    background-color: rgba(255, 255, 255, 0.9);
+    width: 80vw;
+    height: 320px;
+    background-color: rgba(255, 255, 255, 0.0);
     color: black;
     text-align: center;
     margin-top: 25vh;
     margin-left: 10vh;
     border-radius: 15px;
-    animation-duration: 2.5s;
-    animation-name: slidein;
+    flex-direction: row;
+    color: snow
     
 }
 
-@keyframes slidein {
+.Pos {
+    font-weight: 600;
+}
+
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.Thumb1, .Thumb2, .Thumb3, .Thumb4, .Thumb5 {
+    position: relative;
+    background-color: rgba(100, 149, 237, 0.6);
+    border: 3px solid snow;
+    width: 170px;
+    height: 300px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 30px;
+    border-radius: 12px;
+    display: block;
+    transition: 0.5s all;
+}
+
+p {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.Thumb1 {
+    animation-duration: 1.5s;
+    animation-name: slidein1;
+}
+.Thumb2 {
+    animation-duration: 1.7s;
+    animation-name: slidein2;
+}
+.Thumb3 {
+    animation-duration: 1.9s;
+    animation-name: slidein3;
+}
+.Thumb4 {
+    animation-duration: 2.1s;
+    animation-name: slidein4;
+}
+.Thumb5 {
+    animation-duration: 2.3s;
+    animation-name: slidein5;
+}
+
+
+.Thumb1:hover, .Thumb2:hover, .Thumb3:hover, .Thumb4:hover, .Thumb5:hover {
+    background-color: snow;
+    border: 3px solid cornflowerblue;
+    color: cornflowerblue;
+    transition-delay: 0.1s;
+    cursor: pointer;
+    font-weight: 600;
+    transform: translateY(-15px);
+}
+
+.Headshot {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    position: relative;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid cornflowerblue;
+}
+
+.Headshot#Dominik {
+    background-image: url("../../static/Dominik.jpg");
+    background-size: 100%;
+}
+.Headshot#Jachym {
+    background-image: url("../../static/Jachym.jpg");
+    background-position: center;
+}
+.Headshot#Matej {
+    background-image: url("../../static/Matej.jpg");
+    background-position: left;
+    background-size: 100%;
+}
+.Headshot#Michal {
+    background-image: url("../../static/Michal.jpg");
+    background-size: 100%;
+}
+.Headshot#Pavel {
+    background-image: url("../../static/Pavel.jpg");
+    background-size: 100%;
+}
+
+@keyframes slidein1 {
     from {
-        margin-left: 5vh;
-        margin-top: 30vh;
+        margin-top: 100px;
     }
 
     to {
-        margin-left: 10vh;
-        margin-top: 25vh;
+        margin-top: 30px;
     }
 }
+@keyframes slidein2 {
+    from {
+        margin-top: 130px;
+    }
+
+    to {
+        margin-top: 30px;
+    }
+}
+@keyframes slidein3 {
+    from {
+        margin-top: 160px;
+    }
+
+    to {
+        margin-top: 30px;
+    }
+}
+@keyframes slidein4 {
+    from {
+        margin-top: 190px;
+    }
+
+    to {
+        margin-top: 30px;
+    }
+}
+@keyframes slidein5 {
+    from {
+        margin-top: 220px;
+    }
+
+    to {
+        margin-top: 30px;
+    }
+}
+

@@ -7,6 +7,7 @@
     border: 3px solid black;
     display: flex;
     flex-direction: column;
+    border-radius: 15px;
 
 }
 
@@ -41,6 +42,7 @@
     font-size: 20px;
     width: 150px;
     height: 35px;
+    transition: 0.3s all;
     
 }
 
@@ -48,13 +50,15 @@
     margin-top: 50px;
     margin-left: 30%;
     background-color: red;
+    border-radius: 5px;
 }
 
 .Close {
     position: absolute;
     margin-left: 425px;
     margin-top: 20px;
-    background-color: salmon;
+    background-color: #868686;
+    border-radius: 5px;
 }
 
 .Delete:active, .Close:active {
@@ -64,10 +68,10 @@
 
 .Delete:hover {
     cursor: pointer;
-    background-color: darkcyan;
+    background-color: rgb(136, 0, 0);
 }
 
 .Close:hover {
     cursor: pointer;
-    background-color: sandybrown;
+    background-color: rgb(88, 88, 88);
 }

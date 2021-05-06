@@ -2,13 +2,13 @@
     position: absolute;
     width: 900px;
     height: 700px;
-    background-color: snow;
+    background-color: rgba(255, 250, 250, 0.9);
     margin-top: 10vh;
     margin-left: 10vw;
     color: black;
     border-radius: 15px;
     margin-bottom: 20vh;
-    box-shadow: 1px 3px 1px 4px #cecece;
+    border: 2px solid #cecece;
 }
 
 .Addnew {
@@ -20,6 +20,9 @@
     width: 150px;
     height: 35px;
     color: snow;
+    border-radius: 5px;
+    transition: 0.3s all;
+    
 }
 
 .Addnew:active {
@@ -29,7 +32,7 @@
 
 .Addnew:hover {
     cursor: pointer;
-    background-color: darkcyan;
+    background-color: rgb(56, 83, 133);
 }
 
 .Placeholder {

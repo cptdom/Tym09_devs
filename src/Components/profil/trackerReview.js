@@ -11,7 +11,7 @@ const TrackerReview = (props) => {
     return (
         <div className="TrackerReview">
             <form action="">
-                <h2>Přehled trackeru {props.data.name}</h2>
+                <h2>Přehled trackeru "{props.data.name}"</h2>
                 <label>
                     Název: 
                     <input className="Immutable" type="text" value={props.data.name}/>
