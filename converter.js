@@ -5,48 +5,64 @@ const request = require('request');
 
 
 
-let addresses = [];
+let addresses = []
+let idcka = []
 let obj={ 
     locations:[]
 }
+let souradnice
+let i=0
 
-fs.createReadStream('reality_df.csv')
+fs.createReadStream('Jachym500.csv')
 .pipe(csv())
 .on('data', function(data){
     try {
-        let adresa = data.street + ' ' + data.city + ' ' +data.city_part
+        let adresa = data.street + ' ' + data.city_part + ' ' +data.city_part_number
         adresa = adresa.replace(/\s/g, "+")
+        let idcko = data._id
         addresses.push(adresa)
+        idcka.push(idcko)
         //perform the operation
     }
     catch(err) {
         //error handler
     }
+    console.log(addresses)
 })
 .on('end',function(){
-    addresses.forEach(item => {  
-        console.log(item)      
-        itemURI = encodeURI(item)
-        console.log(item)
+    let arrayLength = addresses.length
+    for (let i = 0; i < arrayLength; i++) {  
+        itemURI = encodeURI(addresses[i])
         request(`https://maps.googleapis.com/maps/api/geocode/json?address=${itemURI}&key=`, (err, res) => {
         if (err) { return console.log(err); }
         let location = (JSON.parse(res.body))
-        let souradnice= {
-            loc: item,
-            lat: location.results[0].geometry.location.lat,
-            long: location.results[0].geometry.location.lng
+        try{
+            souradnice= {
+                id: idcka[i],
+                loc: addresses[i],
+                lat: location.results[0].geometry.location.lat,
+                long: location.results[0].geometry.location.lng
+            }
         }
-        console.log(souradnice)
+        catch{
+            souradnice= {
+                id: idcka[i],
+                loc: addresses[i],
+                lat: 0,
+                long: 0
+            }
+        }
         obj.locations.push(souradnice)
         }); 
-    })
+    }
 });
 
 // json saving
 setTimeout(function () {
     console.log("storing data") 
     let jsondata = JSON.stringify(obj);
-    fs.writeFile("locations.json", jsondata, "utf8", (err) => {
+    console.log(jsondata)
+    fs.writeFile("Jachym500.json", jsondata, "utf8", (err) => {
         if (err) throw err;
         console.log("The file has been saved!");
     });
