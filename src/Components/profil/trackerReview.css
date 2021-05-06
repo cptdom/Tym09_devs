@@ -1,0 +1,73 @@
+.TrackerReview {
+    position: absolute;
+    margin-left: 270px;
+    margin-top: 35px;
+    width: 600px;
+    height: 90%;
+    border: 3px solid black;
+    display: flex;
+    flex-direction: column;
+
+}
+
+.TrackerReview label {
+    width: 450px;
+    margin-top: 10px;
+}
+
+.TrackerReview form {
+    display: flex;
+    width: 300px;
+    flex-direction: column;
+    margin-top: 5%;
+    margin-left: 5%;
+    
+
+}
+
+.TrackerReview input {
+    margin-right: 100px;
+    float: right;
+    font-family: inherit
+}
+
+.Immutable {
+    cursor: not-allowed;
+    background-color: #ccc;
+}
+
+.Delete, .Close {
+    color: snow;
+    font-size: 20px;
+    width: 150px;
+    height: 35px;
+    
+}
+
+.Delete {
+    margin-top: 50px;
+    margin-left: 30%;
+    background-color: red;
+}
+
+.Close {
+    position: absolute;
+    margin-left: 425px;
+    margin-top: 20px;
+    background-color: salmon;
+}
+
+.Delete:active, .Close:active {
+    background-color: snow;
+    color: black;
+}
+
+.Delete:hover {
+    cursor: pointer;
+    background-color: darkcyan;
+}
+
+.Close:hover {
+    cursor: pointer;
+    background-color: sandybrown;
+}

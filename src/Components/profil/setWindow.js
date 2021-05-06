@@ -39,7 +39,7 @@ const SetWindow = (props) => {
         const toPush = Object.assign(state);
         axios.post('/realquik.json', toPush)
         .then( response => {
-            console.log(`Data sent successfully with the following message: ${response}`);
+            console.log(`Data sent successfully with the following message: ${response.data}`);
         })
         .catch(error => {
             console.log(`An error occured with the following description: ${error}`)

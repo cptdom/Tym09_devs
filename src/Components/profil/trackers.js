@@ -12,6 +12,7 @@ const Trackers = (props) => {
         data: [],
     })
 
+
     useEffect(() => {
         axios.get('https://testwebapp-3ab8b-default-rtdb.europe-west1.firebasedatabase.app/realquik.json')
         .then((response) => {
@@ -23,7 +24,8 @@ const Trackers = (props) => {
         .catch((error) => {
             console.log(`An error occured with the following description: ${error}`)
         })
-    }, [state.data])
+        console.log("UPDATING STATE")
+    }, [])
 
 
     //TODO: REMOVE AFTER USEEFFECT HAS BEEN TESTED
@@ -50,12 +52,12 @@ const Trackers = (props) => {
 
     return (
         <div className="Trackers" dataTransfer={state.trackerClicked}>
-            <h3 onClick={checkHandler}>Trackery</h3>
-            <p className="Refresh"onClick={listingHandler}>obnovit seznam</p>
+            <h3>Trackery</h3>
+            <p className="Refresh" onClick={listingHandler}>obnovit seznam</p>
             {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam</p>}
             {Object.keys(state.data).map(item => (
                 <SingleTracker name={state.data[item].name} key={state.data[item].name}
-                    clicked={() => props.passed(state.data[item])}/>
+                    clicked={() => props.passed(state.data[item], item)}/>
                 ))}
         </div>
     )
