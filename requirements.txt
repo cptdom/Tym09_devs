@@ -1,0 +1,7 @@
+pandas
+beautifulsoup4
+requests
+selenium
+lxml
+apache-airflow[postgres, password]
+cryptography
