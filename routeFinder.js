@@ -4,6 +4,10 @@ let obj={
     locations:[]
 }
 
+let obj2={ 
+    locations:[]
+}
+
 let rawdatalokace = fs.readFileSync('jachym500.json');
 let rawdatametro = fs.readFileSync('metrolokace.json');
 let locations = JSON.parse(rawdatalokace).locations;
@@ -41,7 +45,8 @@ for (let i = 0; i < locations.length; i++){
             nejblizsiMetroNazev = metra[j].properties.UZEL_NAZEV
         }
     }
-    request(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${propertyLat},${propertyLong}&destinations=${nejblizsiMetroLat},${nejblizsiMetroLong}|50.082381,14.426107&mode=transit&departure_time=1620111925&key=`, (err, res) => {
+    // pesi vzdalenost metro
+    request(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${propertyLat},${propertyLong}&destinations=${nejblizsiMetroLat},${nejblizsiMetroLong}|&mode=walking&key=`, (err, res) => {
         if (err) { return console.log(err) }
         let response = (JSON.parse(res.body))
         console.log(response)
@@ -52,6 +57,18 @@ for (let i = 0; i < locations.length; i++){
         }
         //obj.push(response)
         obj.locations.push(fittedResponse)
+    })  
+    // transit centrum
+    request(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${propertyLat},${propertyLong}&destinations=50.082381,14.426107&mode=transit&departure_time=1620025769&key=`, (err, res) => {
+        if (err) { return console.log(err) }
+        let response = (JSON.parse(res.body))
+        console.log(response.rows)
+        let fittedResponse = {
+            id: locations[i].id,
+            response
+        }
+        //obj.push(response)
+        obj2.locations.push(fittedResponse)
     }) 
     console.log("Lat1: " + propertyLat)
     console.log("Lont1: "+ propertyLong)
@@ -60,7 +77,12 @@ for (let i = 0; i < locations.length; i++){
 setTimeout(function () {
     console.log("storing data") 
     let jsondata = JSON.stringify(obj);
-    fs.writeFile("JachymMetro.json", jsondata, "utf8", (err) => {
+    let jsondata2= JSON.stringify(obj2)
+     fs.writeFile("JachymPeskyOdMetra.json", jsondata, "utf8", (err) => {
+        if (err) throw err;
+        console.log("The file has been saved!");
+    }); 
+    fs.writeFile("JachymMHDOdCentra.json", jsondata2, "utf8", (err) => {
         if (err) throw err;
         console.log("The file has been saved!");
     });
