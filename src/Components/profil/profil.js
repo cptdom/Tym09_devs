@@ -28,6 +28,7 @@ const Profil = (props) => {
     const showTrackerHandler = (data, name) => {
         changeState((prevState) => ({
             ...prevState,
+            displayNewTracker: false,
             dataFromChild: data,
             currentlyDisplayingId: name,
         }))
@@ -48,7 +49,6 @@ const Profil = (props) => {
         && axios.delete(`https://testwebapp-3ab8b-default-rtdb.europe-west1.firebasedatabase.app/realquik/${toBeDeleted}.json`)
             .then((response) => {
                 window.alert(`Tracker ${trackerName} byl úspěšně vymazán. Server response: ${response.status} ${response.statusText}`)
-                console.log(response)
             })
             .catch((error) => {
                 window.alert(`Někde se stala chyba. Server response: ${error}`)
@@ -61,7 +61,7 @@ const Profil = (props) => {
     // }
 
     const trackerReview = state.dataFromChild ? <TrackerReview closer={resetShowTrackerToNull} deleter={deleteSingleTrackerHandler} data={state.dataFromChild}/>
-    : <div className="Placeholder">Vyberte tracker nebo zvolte "Přidat nový"</div>
+    : <div className="Placeholder">Vyberte hlídače nebo zvolte "Přidat nový"</div>
 
 
     const content = 

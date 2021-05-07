@@ -28,7 +28,6 @@ const Trackers = (props) => {
     }, [])
 
 
-    //TODO: REMOVE AFTER USEEFFECT HAS BEEN TESTED
     const listingHandler = () => {
         axios.get('https://testwebapp-3ab8b-default-rtdb.europe-west1.firebasedatabase.app/realquik.json')
         .then((response) => {
@@ -43,18 +42,12 @@ const Trackers = (props) => {
     }
 
 
-    //TODO: REMOVE WHEN NOT NEEDED
-    const checkHandler = () => {
-        console.log(state)
-        console.log(state.data[state.trackerClicked])
-    }
-
 
     return (
         <div className="Trackers" dataTransfer={state.trackerClicked}>
-            <h3>Trackery</h3>
+            <h3>Hlídače</h3>
             <p className="Refresh" onClick={listingHandler}>obnovit seznam</p>
-            {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam nebo vytvořte tracker</p>}
+            {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam nebo vytvořte hlídače</p>}
             {Object.keys(state.data).map(item => (
                 <SingleTracker name={state.data[item].name} key={state.data[item].name}
                     clicked={() => props.passed(state.data[item], item)}/>

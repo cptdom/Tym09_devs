@@ -2,7 +2,7 @@
     position: absolute;
     margin-left: 270px;
     margin-top: 35px;
-    width: 600px;
+    width: 850px;
     height: 90%;
     border: 3px solid black;
     display: flex;
@@ -56,7 +56,7 @@
 
 .Close {
     position: absolute;
-    margin-left: 425px;
+    margin-left: 725px;
     margin-top: 20px;
     background-color: salmon;
     border-radius: 5px;

@@ -59,7 +59,7 @@ const SetWindow = (props) => {
     return (
         <div className="SetWindow">
             <form action="">
-                <h2>Nový tracker</h2>
+                <h2>Nový hlídač</h2>
                 <label>
                     Název: 
                     <input id="name" className={state.name} type="text" value={state.name} onChange={changeHandler}/>
