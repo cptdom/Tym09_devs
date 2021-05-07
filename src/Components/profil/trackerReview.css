@@ -43,6 +43,7 @@
     width: 150px;
     height: 35px;
     transition: 0.3s all;
+    border: none;
     
 }
 
@@ -55,7 +56,7 @@
 
 .Close {
     position: absolute;
-    margin-left: 650px;
+    margin-left: 678px;
     margin-top: 20px;
     background-color: #868686;
     border-radius: 5px;

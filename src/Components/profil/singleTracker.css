@@ -1,14 +1,13 @@
 .singleTracker {
     width: 120px;
     height: 120px;
-    border: 1px solid grey;
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
     border-radius: 15px;
     font-weight: 600;
-
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+    color: cornflowerblue;
+    box-shadow: 0 0 5px rgba(100, 149, 237, 0.6);
     transition: 0.3s all;
 }
 
@@ -17,13 +16,13 @@
     text-decoration: none;
     font-weight: inherit;
     font-size: 16px;
-    color: cornflowerblue;
     padding-left: 4px;
     padding-right: 4px;
 }
 
 .singleTracker:hover {
-    background-color: #cecece;
+    background-color: rgba(98, 98, 98, 0.6);
+    color: snow;
     cursor: pointer;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);;
+    box-shadow: 6px 6px 3px rgba(100, 149, 237, 0.9);;
 }

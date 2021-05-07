@@ -1,0 +1,18 @@
+.MapContainer {
+    width: 375px;
+    height: 375px;
+    position: absolute;
+    transition: 0.5s all;
+    border: 2px solid cornflowerblue;
+    margin-top: 75px;
+    margin-left: 450px;
+}
+.leaflet-container {
+    height: 375px;
+    width: 375px;
+  }
+
+.MapContainer:hover {
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);;
+}

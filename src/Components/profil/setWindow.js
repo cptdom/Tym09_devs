@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../axios-firebase';
+import Map from './map';
 import './setWindow.css';
 
 const SetWindow = (props) => {
 
     const districtSelectionArray = ["Praha 1", "Praha 2", "Praha 3", "Praha 4", "Praha 5"]
+    //TODO: pozor, data v JSON jsou momentalne jen po Prahu 5
     const proportionsArray = ["1+kk","1+1","2+kk","2+1","3+kk","3+1"]
     const scheduleOptionsArray = {1: "1x denně"}
     
@@ -113,6 +115,7 @@ const SetWindow = (props) => {
             </form>
             <button className="Launch" onClick={buttonHandler}>Start</button>
             <button className="Close" onClick={props.closeClick}>Zavřít</button>
+            <Map district={state.district}/>
         </div>
     )
 }

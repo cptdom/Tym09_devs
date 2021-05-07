@@ -1,11 +1,8 @@
 import React from 'react';
+import Map from './map';
 import './trackerReview.css';
 
 const TrackerReview = (props) => {
-
-    const dummyHandler = () => {
-        console.log("Hana von Schnabelhoff")
-    }
 
 
     return (
@@ -51,9 +48,9 @@ const TrackerReview = (props) => {
                     <input className="Immutable" type="text" value={props.data.email}/>
                 </label>
             </form>
-            <button className="Delete" onClick={props.deleter}>Odstranit</button> 
-            {/* props.deleter */}
+            <button className="Delete" onClick={props.deleter}>Odstranit</button>
             <button className="Close" onClick={props.closer}>Zavřít</button>
+            <Map district={props.data.district}/>
             </div>
     )
 }

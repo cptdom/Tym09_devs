@@ -4,21 +4,21 @@ import './About.css'
 const about = (props) => {
     return (
         <div className="About">
-            <a href="https://www.linkedin.com/in/dominik-hartinger-b88879201/" target="_blank"><div className="Thumb1">
+            <a href="https://www.linkedin.com/in/dominik-hartinger-b88879201/" target="_blank" rel="noreferrer"><div className="Thumb1">
                     <div className="Headshot" id="Dominik"></div>
                     <h3>Dominik</h3>
                     <p className="Pos">CEO</p>
                     <p>Front-end developer</p>
                 </div>
             </a>
-            <a href="https://www.linkedin.com/in/jachymdvorak/" target="_blank"><div className="Thumb2">
+            <a href="https://www.linkedin.com/in/jachymdvorak/" target="_blank" rel="noreferrer"><div className="Thumb2">
                 <div className="Headshot" id="Jachym"/>
                     <h3>Jáchym</h3><br/>
                     <p>Chief Data Scientist</p>
                     <p>Týmový pražák</p>
                 </div>
             </a>
-            <a href="https://www.linkedin.com/in/matejcermak/" target="_blank"><div className="Thumb3">
+            <a href="https://www.linkedin.com/in/matejcermak/" target="_blank" rel="noreferrer"><div className="Thumb3">
                 <div className="Headshot" id="Matej"/>
                     <h3>Matěj</h3>
                     <p className="Pos">CTO</p>
@@ -26,7 +26,7 @@ const about = (props) => {
                     <p>Data scientist</p>
                 </div>
             </a>
-            <a href="https://www.linkedin.com/in/michal-dupkala-46bb95164/" target="_blank"><div className="Thumb4">
+            <a href="https://www.linkedin.com/in/michal-dupkala-46bb95164/" target="_blank" rel="noreferrer"><div className="Thumb4">
                 <div className="Headshot" id="Michal"/>
                     <h3>Michal</h3>
                     <p className="Pos">COO</p>
@@ -34,7 +34,7 @@ const about = (props) => {
                     <p>týmový Slovák</p>
                 </div>
             </a>
-            <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZJpNtlUZatZVTHpAJRB8Wsu_tGjmPe15Hg&usqp=CAU" target="_blank"><div className="Thumb5">
+            <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZJpNtlUZatZVTHpAJRB8Wsu_tGjmPe15Hg&usqp=CAU" target="_blank" rel="noreferrer"><div className="Thumb5">
                 <div className="Headshot" id="Pavel"/>
                 <h3>Pavel</h3><br/>
                 <p>Database expert</p>
