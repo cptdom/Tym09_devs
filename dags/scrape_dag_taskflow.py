@@ -22,7 +22,7 @@ default_args = {
 def scrape_taskflow():
   @task()
   def remax_task():
-    return remax_scrape(debug=True)
+    return remax_scrape()
 
   @task()
   def prazskereality_task():
@@ -30,15 +30,15 @@ def scrape_taskflow():
 
   @task()
   def bezrealitky_task():
-    return bezrealitky_scrape(debug=True)
+    return bezrealitky_scrape()
 
   @task()
   def idnes_task():
-    return idnes_scrape(debug=True)
+    return idnes_scrape()
 
   @task()
   def sreality_task():
-    return sreality_scrape(debug=True)
+    return sreality_scrape()
 
   @task()
   def merge_mongo_push(data):

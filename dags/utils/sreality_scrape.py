@@ -136,7 +136,8 @@ def get_floor(row):
   floor = re.search(r'^(-?\d+)\..*', row)
   return floor.group(1) if floor else None
 
-def scrape_apartment(driver, url):
+def scrape_apartment(url):
+  driver = webdriver.Chrome(options=CHR_OPTS)
   apart = {}
   driver.get(url)  # otevri link
   # wait for page to load
@@ -151,6 +152,7 @@ def scrape_apartment(driver, url):
     return None
 
   page_soup = BeautifulSoup(driver.page_source, 'lxml')
+  driver.quit()
 
   apart['title'] = page_soup.select_one('div.property-title > h1 > span > span').get_text()
   apart['address'] = page_soup.select_one('span.location-text').get_text()
@@ -175,19 +177,22 @@ def scrape_apartment(driver, url):
   apart['penb'] = get_penb(apart['penb'])
   apart['floor'] = get_floor(apart['floor'])
 
+  return apart
+
 def sreality_scrape(debug=False):
   print('Running webdriver...')
-  driver = webdriver.Chrome(options=CHR_OPTS)
   # Ziskani pocet stranek
   propertyLinks = []
   i = 1
   while True:
     print(f'Scraping page: {i}')
+    driver = webdriver.Chrome(options=CHR_OPTS)
     prefix = DEBUG_URL if debug else MAIN_URL
     url = f'{prefix}strana={i}'  # Otevri URL hledani bytu
     driver.get(url)  # otevri v chromu url link
     time.sleep(6)
     page_soup = BeautifulSoup(driver.page_source, 'lxml')  # page_soup pro beautifulsoup nacte html otevrene stanky
+    driver.quit()
     title_elem = page_soup.select('a.title')
     if not title_elem:  # Pokud na stracne existuje nazev inzeratu obsahujici href na inzerat
       break  # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
@@ -202,8 +207,7 @@ def sreality_scrape(debug=False):
   # Přiřaď nemovitosti atribut
   for i,url in enumerate(propertyLinks):  # projdi kazdy link
     print(f'[{i + 1}/{len(propertyLinks)}] Scraping apartment: {url}')
-    aparts.append(scrape_apartment(driver, url))
-  driver.quit()
+    aparts.append(scrape_apartment(url))
 
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)

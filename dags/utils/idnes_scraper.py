@@ -59,13 +59,12 @@ def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
 def get_apartment_links(debug):
   print('Running webdriver...')
 
-  # driver = webdriver.Chrome() if DEBUG else webdriver.Chrome(options=CHR_OPTS) # for local debug usage
-  driver = webdriver.Chrome(options=CHR_OPTS)
   url = DEBUG_URL if debug else MAIN_URL
   apart_links = []
 
   i_page = 0
   while True:
+    driver = webdriver.Chrome(options=CHR_OPTS)
     print(f'Scraping page: {i_page}')
     page_url = f'{url}/?page={i_page}' if i_page > 0 else url  # first page does not have page GET parameter
     driver.get(page_url)
@@ -77,10 +76,11 @@ def get_apartment_links(debug):
     for link in ap_list_elem:
       apart_links.append(f'{URL_BASE}{link.get("href")}')  # scrape apartment listing links
     i_page = i_page + 1
+    driver.quit()
 
   apart_links = list(dict.fromkeys(apart_links))  # Remove duplicates
   print(f'Found {len(apart_links)} apartments')
-  driver.quit()
+
   return apart_links
 
 

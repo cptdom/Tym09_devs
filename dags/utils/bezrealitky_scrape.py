@@ -84,10 +84,10 @@ def scrape_apartment(apart_url):
 def get_apartment_links(debug):
   url = DEBUG_URL if debug else MAIN_URL
   print('Running webdriver...')
-  # driver = webdriver.Chrome() if DEBUG else webdriver.Chrome(options=CHR_OPTS)
   driver = webdriver.Chrome(options=CHR_OPTS)
 
   driver.get(url)
+  time.sleep(30)
   # click 'Show more' until there are no more apartments to load
   while True:
     try:

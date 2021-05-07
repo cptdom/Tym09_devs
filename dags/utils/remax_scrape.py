@@ -128,18 +128,19 @@ def scrape_apartment(url):
 
 def remax_scrape(debug=False):
   print('Running webdriver...')
-  driver = webdriver.Chrome(options=CHR_OPTS)
   # Ziskani pocet stranek
   nextPageExists = True
   propertyLinks = []
   i = 1
   while nextPageExists:
+    driver = webdriver.Chrome(options=CHR_OPTS)
     prefix = DEBUG_URL if debug else MAIN_URL
     url = f'{prefix}stranka={i}'  # Otevri URL hledani bytu
     print(f'Scraping page: {i}')
     driver.get(url)  # otevri v chromu url link
     time.sleep(6)  # pockej 6 vterin
     page_soup = BeautifulSoup(driver.page_source, 'lxml')  # page_soup pro beautifulsoup nacte html otevrene stanky
+    driver.quit()
     ap_link_elem = page_soup.select('a.pl-items__link')
     if ap_link_elem:  # Pokud na stracne existuje a class="pl-items__link" - odkaz odkazujici na inzerat
       # Zescrapuj odkazy na nemovitosti
@@ -150,7 +151,7 @@ def remax_scrape(debug=False):
       i = i + 1
     else:
       nextPageExists = False  # pokud na strance odkaz na inzerat neexistuje ukonci cyklus
-  driver.quit()
+
   propertyLinks = list(dict.fromkeys(propertyLinks))  # odstan duplicity
   print(f'Found {len(propertyLinks)} apartments in {i} pages')
 
