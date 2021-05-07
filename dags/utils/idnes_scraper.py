@@ -34,11 +34,7 @@ PAR_TBL_HEADINGS = {
 MIXED_BOOL_FEATURES = ['balcony', 'terrace']
 # bool only features - either True (checkmark) or missing
 BOOL_FEATURES = ['basement', 'internet', 'elevator']
-
-CHR_OPTS = Options()
-CHR_OPTS.add_argument('--headless')
-CHR_OPTS.add_argument('--no-sandbox')
-CHR_OPTS.add_argument('--disable-dev-shm-usage')
+BS_PARSER = 'lxml'
 
 URL_BASE = 'https://reality.idnes.cz'
 MAIN_URL = f'{URL_BASE}/s/prodej/byty/praha/'
@@ -57,26 +53,22 @@ def find_parameter(page_soup, parameter):  # parameter = hodnota labelu
 
 
 def get_apartment_links(debug):
-  print('Running webdriver...')
+  # print('Running webdriver...')
 
   url = DEBUG_URL if debug else MAIN_URL
   apart_links = []
 
   i_page = 0
   while True:
-    driver = webdriver.Chrome(options=CHR_OPTS)
     print(f'Scraping page: {i_page}')
     page_url = f'{url}/?page={i_page}' if i_page > 0 else url  # first page does not have page GET parameter
-    driver.get(page_url)
-    time.sleep(6)
-    soup = BeautifulSoup(driver.page_source, 'lxml')
+    soup = BeautifulSoup(requests.get(page_url).content, BS_PARSER)
     ap_list_elem = soup.select('a.c-list-products__imgs')
     if not ap_list_elem:
       break  # no more apartments to scrape
     for link in ap_list_elem:
       apart_links.append(f'{URL_BASE}{link.get("href")}')  # scrape apartment listing links
     i_page = i_page + 1
-    driver.quit()
 
   apart_links = list(dict.fromkeys(apart_links))  # Remove duplicates
   print(f'Found {len(apart_links)} apartments')
@@ -87,7 +79,7 @@ def get_apartment_links(debug):
 def scrape_apartment(apart_url):
   apart = {}
 
-  page_soup = BeautifulSoup(requests.get(apart_url).content, 'lxml')
+  page_soup = BeautifulSoup(requests.get(apart_url).content, BS_PARSER)
 
   apart['link'] = apart_url
 
@@ -132,7 +124,7 @@ def count_features(apart_links):
   all_features = []
   for link in apart_links:
     print(f'Getting features from apartment: {link}')
-    apart_page = BeautifulSoup(requests.get(link).content, 'lxml')
+    apart_page = BeautifulSoup(requests.get(link).content, BS_PARSER)
     f_elems = apart_page.find_all('dt')
     features = [f.get_text() for f in f_elems]
     all_features = all_features + features
@@ -207,3 +199,5 @@ def idnes_scrape(debug=False):
   aparts_df = pd.DataFrame(aparts)
 
   return aparts_df
+
+idnes_scrape(debug=True)
