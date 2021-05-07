@@ -113,7 +113,7 @@ const SetWindow = (props) => {
                     <input className="Immutable" type="text" value={state.email}/>
                 </label>
             </form>
-            <button className="Launch" onClick={buttonHandler}>Start</button>
+            <button className="Launch" onClick={buttonHandler}>Odeslat</button>
             <button className="Close" onClick={props.closeClick}>Zavřít</button>
             <Map district={state.district}/>
         </div>
