@@ -199,5 +199,3 @@ def idnes_scrape(debug=False):
   aparts_df = pd.DataFrame(aparts)
 
   return aparts_df
-
-idnes_scrape(debug=True)
