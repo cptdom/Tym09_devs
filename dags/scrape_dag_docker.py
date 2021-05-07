@@ -22,11 +22,11 @@ default_args = {
       'out_filename': 'idnes.csv'
     },
     'remax': {
-      'script': 're-max.py',
+      'script': 'remax_scrape.py',
       'out_filename': 'remax.csv'
     },
     'sreality': {
-      'script': 'sReality.py',
+      'script': 'sreality_scrape.py',
       'out_filename': 'sreality.csv'
     }
   }
