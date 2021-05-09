@@ -43,4 +43,17 @@ router.route("/trackers").get((req, res) => {
     })
 })
 
+
+router.delete("/delete/trackers/:id", (req, res) => {
+    Tracker.findByIdAndDelete(req.params.id)
+    .then(response => {
+        res.json(response)
+        console.log("Data deleted successfully")
+        console.log(req.params)
+    })
+    .catch(error => {
+        console.log(`An error occured during data retrieval: ${error}`)
+    })
+})
+
 module.exports = router;

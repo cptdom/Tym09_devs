@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import Trackers from './trackers';
 import SetWindow from './setWindow';
 import TrackerReview from './trackerReview';
-import axios from '../../axios-firebase';
+import axios from 'axios';
 
 const Profil = (props) => {
 
@@ -43,22 +43,19 @@ const Profil = (props) => {
     }
 
     const deleteSingleTrackerHandler = () => {
-        let toBeDeleted = Object.assign(state.currentlyDisplayingId)
+        let toBeDeleted = Object.assign(state.dataFromChild._id)
         let trackerName = Object.assign(state.dataFromChild.name)
         window.confirm(`Opravdu chcete smazat tracker ${trackerName}? Tato akce nejde zvrátit!`)
-        && axios.delete(`https://testwebapp-3ab8b-default-rtdb.europe-west1.firebasedatabase.app/realquik/${toBeDeleted}.json`)
-            .then((response) => {
+        && axios.delete(`/delete/trackers/${toBeDeleted}`, {id: toBeDeleted})
+        .then((response) => {
                 window.alert(`Tracker ${trackerName} byl úspěšně vymazán. Server response: ${response.status} ${response.statusText}`)
             })
-            .catch((error) => {
+        .catch((error) => {
                 window.alert(`Někde se stala chyba. Server response: ${error}`)
             })
-            .finally(resetShowTrackerToNull())
+        .finally(resetShowTrackerToNull())
     }
 
-    // const dummyHandler = () => {
-    //     console.log(state)
-    // }
 
     const trackerReview = state.dataFromChild ? <TrackerReview closer={resetShowTrackerToNull} deleter={deleteSingleTrackerHandler} data={state.dataFromChild}/>
     : <div className="Placeholder">Vyberte hlídače nebo zvolte "Přidat nový"</div>

@@ -4,6 +4,7 @@ import './trackerReview.css';
 
 const TrackerReview = (props) => {
 
+    const scheduleOptionsArray = {1: "1x denně"}
 
     return (
         <div className="TrackerReview">
@@ -38,7 +39,7 @@ const TrackerReview = (props) => {
                 </label>
                 <label>
                     Reportovat  
-                    <input className="Immutable" type="text" value={props.data.schedule}>
+                    <input className="Immutable" type="text" value={scheduleOptionsArray[props.data.schedule]}>
                     </input>
                 </label>
             </form>

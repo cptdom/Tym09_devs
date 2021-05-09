@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './trackers.css';
 import SingleTracker from './singleTracker';
-import axios from '../../axios-firebase';
-
-
+import axios from 'axios';
+//import axios from '../../axios-firebase';
 
 
 const Trackers = (props) => {
@@ -14,31 +13,32 @@ const Trackers = (props) => {
 
 
     useEffect(() => {
-        axios.get('https://testwebapp-3ab8b-default-rtdb.europe-west1.firebasedatabase.app/realquik.json')
-        .then((response) => {
-            changeState((prevState) => ({
+        axios.get("/trackers")
+        .then(res => 
+            changeState((prevState) =>({
                 ...prevState,
-                data: response.data ? response.data : [],
-            }));
-        })
-        .catch((error) => {
+                data: res.data ? res.data : [],
+            }))
+        )
+        .catch(error => {
             console.log(`An error occured with the following description: ${error}`)
         })
-        console.log("UPDATING STATE")
-    }, [])
+        .finally(console.log("Updating state"))
+    },[])
 
 
     const listingHandler = () => {
-        axios.get('https://testwebapp-3ab8b-default-rtdb.europe-west1.firebasedatabase.app/realquik.json')
-        .then((response) => {
-            changeState((prevState) => ({
+        axios.get("/trackers")
+        .then(res => 
+            changeState((prevState) =>({
                 ...prevState,
-                data: response.data ? response.data : [],
-            }));
-        })
-        .catch((error) => {
+                data: res.data? res.data : [],
+            }))
+        )
+        .catch(error => {
             console.log(`An error occured with the following description: ${error}`)
         })
+        .finally(console.log("Updating state"))
     }
 
 
