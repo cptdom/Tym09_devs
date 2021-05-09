@@ -11,6 +11,10 @@
     border: 2px solid #cecece;
 }
 
+.Profil h2 {
+    color: cornflowerblue;
+}
+
 .Addnew {
     position: absolute;
     font-size: 20px;
@@ -38,7 +42,7 @@
 
 .Placeholder {
     position: absolute;
-    margin-left: 310px;
+    margin-left: 410px;
     margin-top: 300px;
     font-weight: 600;
     font-size: 24px;
