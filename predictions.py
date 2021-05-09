@@ -9,7 +9,6 @@ import json
 import pickle
 import pandas as pd
 import numpy as np
-import xgboost
  
 CREATE_JSON = False
 
@@ -46,14 +45,12 @@ with open('all_models_dict_v2.pickle', 'rb') as f:
     
 df = pd.read_csv('processed_dataset.csv', index_col = 0)
 
-
 def predict(model_dict, model_type, data):
     return ((0.35 * model_dict[model_type]['stacker'].predict(data)) +
             (0.25 * model_dict[model_type]['XGBRegressor'].predict(data)) +
             (0.15 * model_dict[model_type]['BaggingRegressor'].predict(data)) +  
             (0.25 * model_dict[model_type]['LGBMRegressor'].predict(data)))
     
-
 # PREDICT PRICES
 
 def extract_size_string(row):
@@ -139,5 +136,12 @@ def recommendation_generator(dataset, request, number_of_flats):
     
     return recommendations
 
-recommendations = recommendation_generator(df, test_json, 15)
+recommendations = recommendation_generator(df, test_json, 40)
+
+for k, v in recommendations.items():
+    
+    print(k, '\n\n')
+    
+    for link in v['links']:
+        print(link, '\n')
 
