@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from '../../axios-firebase';
+//import axios from '../../axios-firebase';
+import axios from 'axios';
 import Map from './map';
 import './setWindow.css';
 
@@ -36,21 +37,46 @@ const SetWindow = (props) => {
         }));
     }
 
-    const buttonHandler = (event) => {
-        event.preventDefault();
-        const toPush = Object.assign(state);
-        axios.post('/realquik.json', toPush)
+    const sendDataHandler = (event) => {
+        event.preventDefault()
+        const toPush = {
+            name: state.name,
+            email: state.email,
+            city: state.city,
+            district: state.district,
+            propLow: state.propLow,
+            propHigh: state.propHigh,
+            schedule: state.schedule,
+        }
+
+        window.confirm(`Opravdu chcete odeslat tracker ${toPush.name}?`)
+        && axios.post('http://localhost:3001/create', toPush)
         .then( response => {
-            console.log(`Data sent successfully with the following message: ${response.data}`);
+            console.log("Data sent successfully")
+            console.log(`Status code: ${response.statusText}`)
         })
         .catch(error => {
-            console.log(`An error occured with the following description: ${error}`)
+            console.log(`An error occured: ${error}`)
             window.alert(`Někde se stala chyba, tracker ${toPush.name} nebyl uložen.`)
         })
-        window.confirm(`Opravdu chcete odeslat tracker ${toPush.name}?`) && props.closeClick()
+        && props.closeClick()
         window.alert(`Tracker ${toPush.name} odeslán.`)
-
     }
+
+    // const buttonHandler = (event) => {
+    //     event.preventDefault()
+    //     const toPush = Object.assign(state);
+    //     axios.post('/realquik.json', toPush)
+    //     .then( response => {
+    //         console.log(`Data sent successfully with the following message: ${response.data}`);
+    //     })
+    //     .catch(error => {
+    //         console.log(`An error occured with the following description: ${error}`)
+    //         window.alert(`Někde se stala chyba, tracker ${toPush.name} nebyl uložen.`)
+    //     })
+    //     window.confirm(`Opravdu chcete odeslat tracker ${toPush.name}?`) && props.closeClick()
+    //     window.alert(`Tracker ${toPush.name} odeslán.`)
+    // }
 
     let proportionsConstrainedArray = proportionsArray.slice(
         0,
@@ -113,7 +139,7 @@ const SetWindow = (props) => {
                     <input className="Immutable" type="text" value={state.email}/>
                 </label>
             </form>
-            <button className="Launch" onClick={buttonHandler}>Odeslat</button>
+            <button className="Launch" onClick={sendDataHandler}>Odeslat</button>
             <button className="Close" onClick={props.closeClick}>Zavřít</button>
             <Map district={state.district}/>
         </div>
