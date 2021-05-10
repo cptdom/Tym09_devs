@@ -5,3 +5,4 @@ selenium
 lxml
 apache-airflow[postgres, password]
 cryptography
+xgboost==1.3.3

@@ -9,25 +9,34 @@ import json
 import pickle
 import pandas as pd
 import numpy as np
- 
-CREATE_JSON = False
+import argparse
+
+CREATE_JSON = True
 
 if CREATE_JSON:
     test_json = {'tracker_1': 
                  { 'city': 'Praha',
                   'district': 'Praha 3',
-                  'email': 'dummy@dummy.cz',
+                  'email': 'dummy@dummy.praha3',
                   'name': 'Malé byty',
                   'propHigh': '1+1',
                   'propLow': '1+kk',
                   'schedule': 1
                   }, 'tracker_2': 
                  { 'city': 'Praha',
-                  'district': 'Praha 2',
-                  'email': 'dummy@dummy.cz',
+                  'district': 'Praha 4',
+                  'email': 'dummy@dummy.praha4',
                   'name': 'Velké byty',
                   'propHigh': '3+1',
                   'propLow': '3+kk',
+                  'schedule': 1
+                  }, 'tracker_3': 
+                 { 'city': 'Praha',
+                  'district': 'Praha 1',
+                  'email': 'dummy@dummy.praha1',
+                  'name': 'Střední byty',
+                  'propHigh': '2+1',
+                  'propLow': '2+kk',
                   'schedule': 1
                   }
                  }
@@ -35,15 +44,47 @@ if CREATE_JSON:
     with open('test_json.json', 'w') as f:
         json.dump(test_json, f)
 
+CMD_LINE = True
+
+if CMD_LINE:
+# Create the parser
+    my_parser = argparse.ArgumentParser(description='Please list files to use')
+    
+    # Add the arguments
+    my_parser.add_argument('-t',
+                          '--Tracker',
+                           metavar = '',
+                           type=str,
+                           help='Specify name/path of tracker json file')
+    
+    my_parser.add_argument('-m',
+                           '--Model',
+                           metavar = '',
+                           type=str,
+                           help='Specify name/path of trained models pickle file')
+    
+    my_parser.add_argument('-d',
+                           '--Database',
+                           metavar = '',
+                           type=str,
+                           help='Specify name/path of database of scraped flats')
+    
+    args = my_parser.parse_args()
+    
+    trackers = args.Tracker
+    models = args.Model
+    database = args.Database
+     
 # LOAD DATA
 
-with open('test_json.json', 'r') as f:
-    test_json = json.load(f)
+with open(trackers, 'r') as f:
+    trackers = json.load(f)
     
-with open('all_models_dict_v2.pickle', 'rb') as f:
+with open(models, 'rb') as f:
     model_dict = pickle.load(f)
     
-df = pd.read_csv('processed_dataset.csv', index_col = 0)
+df = pd.read_csv(database, index_col = 0)
+
 
 def predict(model_dict, model_type, data):
     return ((0.35 * model_dict[model_type]['stacker'].predict(data)) +
@@ -119,7 +160,7 @@ def recommendation_generator(dataset, request, number_of_flats):
     
     recommendations = {}
     
-    flats_temp = get_underpriced_flats(dataset)
+    underpriced_flats = get_underpriced_flats(dataset)
     
     for tracker, data in request.items():
     
@@ -128,20 +169,19 @@ def recommendation_generator(dataset, request, number_of_flats):
         district = data['district']
         email = data['email']
         
-        flats_temp = flats_temp[flats_temp['rooms_string'].eq(size) & \
-                                flats_temp['district'].eq(district)].sort_values('difference', ascending = False)
+        flats_temp = underpriced_flats[underpriced_flats['rooms_string'].eq(size) & \
+                                underpriced_flats['district'].eq(district)].sort_values('difference', ascending = False)
         recommendations[tracker_id] = {'links': list(flats_temp[:number_of_flats].index),
                                        'email': email,
                                        'district': district}
     
     return recommendations
 
-recommendations = recommendation_generator(df, test_json, 40)
+recommendations = recommendation_generator(df, trackers, 10)
 
 for k, v in recommendations.items():
     
     print(k, '\n\n')
-    
     for link in v['links']:
         print(link, '\n')
 

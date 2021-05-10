@@ -1,4 +1,6 @@
 *.csv
 *.exe
+*.json
+*.pickle
 .idea/
 .ipynb_checkpoints/

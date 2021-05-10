@@ -9,11 +9,8 @@ import pandas as pd
 import numpy as np
 from pymongo import MongoClient
 import requests
-from io import StringIO
-import json, requests, urllib, io
+import io
 import re
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
 import category_encoders as ce
 
