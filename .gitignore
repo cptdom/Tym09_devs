@@ -2,5 +2,6 @@
 *.exe
 *.json
 *.pickle
+*.xlsx
 .idea/
 .ipynb_checkpoints/

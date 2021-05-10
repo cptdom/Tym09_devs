@@ -12,14 +12,14 @@ import numpy as np
 import argparse
 import re
 
-CREATE_TEST_JSON = False
-DEBUG = False
+CREATE_TEST_JSON = True
+DEBUG = True
 
 if CREATE_TEST_JSON:
     test_json = {'tracker_1': 
                  { 'city': 'Praha',
                   'district': 'Praha 3',
-                  'email': 'dummy@dummy.praha3',
+                  'email': 'jachym.dvorak@seznam.cz',
                   'name': 'Malé byty',
                   'propHigh': '2+1',
                   'propLow': '1+kk',
@@ -27,7 +27,7 @@ if CREATE_TEST_JSON:
                   }, 'tracker_2': 
                  { 'city': 'Praha',
                   'district': 'Praha 4',
-                  'email': 'dummy@dummy.praha4',
+                  'email': 'jachym.dvorak@seznam.cz',
                   'name': 'Velké byty',
                   'propHigh': '3+1',
                   'propLow': '3+kk',
@@ -35,7 +35,7 @@ if CREATE_TEST_JSON:
                   }, 'tracker_3': 
                  { 'city': 'Praha',
                   'district': 'Praha 1',
-                  'email': 'dummy@dummy.praha1',
+                  'email': 'jachym.dvorak@seznam.cz',
                   'name': 'Střední byty',
                   'propHigh': '3+1',
                   'propLow': '2+kk',
@@ -244,11 +244,38 @@ def generate_recommendations_for_each_tracker(dataset, request, number_of_flats 
             
         recommendations[tracker_id] = {'links': list(flats_temp[:number_of_flats].index),
                                        'email': email,
-                                       'district': district}
+                                       'district': district,
+                                       'difference': list(flats_temp.iloc[:number_of_flats]['difference']),
+                                       'predicted_price': list(flats_temp.iloc[:number_of_flats]['predicted']),
+                                       'actual_price': list(flats_temp.iloc[:number_of_flats]['price'])}
     
     return recommendations
 
-recommendations = generate_recommendations_for_each_tracker(df, trackers, 10)
+recommendations = generate_recommendations_for_each_tracker(df, trackers, 5)
 
 with open('recommendations.json', 'w') as out:
     json.dump(recommendations, out)
+    
+
+def get_all_underpriced_flats(recommendations, to_excel = False):
+    
+    l = []
+    p = []
+    a = []
+    d = []
+    
+    for tracker, values in recommendations.items():
+        #underpriced_flats['tracker'].append(tracker)
+        for li in values['links']:
+            l.append(li)
+        for pr in values['predicted_price']:
+            p.append(pr)
+        for ac in values['actual_price']:
+            a.append(ac)
+        for di in values['difference']:
+            d.append(di)
+        
+    underpriced_flats = pd.DataFrame({'links': l, 'predicted_price': p, 'actual_price': a, 'difference': d})
+    
+    if to_excel:
+        underpriced_flats.to_excel('podcenene_byty.xlsx')
