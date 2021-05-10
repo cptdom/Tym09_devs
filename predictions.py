@@ -13,6 +13,7 @@ import argparse
 import re
 
 CREATE_TEST_JSON = False
+DEBUG = False
 
 if CREATE_TEST_JSON:
     test_json = {'tracker_1': 
@@ -36,16 +37,14 @@ if CREATE_TEST_JSON:
                   'district': 'Praha 1',
                   'email': 'dummy@dummy.praha1',
                   'name': 'Střední byty',
-                  'propHigh': '2+1',
-                  'propLow': '3+kk',
+                  'propHigh': '3+1',
+                  'propLow': '2+kk',
                   'schedule': 1
                   }
                  }
     
     with open('test_json.json', 'w') as f:
         json.dump(test_json, f)
-
-DEBUG = True
 
 if DEBUG is not True:
 # Create the parser
@@ -176,26 +175,29 @@ def return_size_from_input_json(dictionary):
     
     '''
 
-    low = re.search(r'\d+', trackers['tracker_1']['propLow'])
+    low = re.search(r'\d+', dictionary['propLow'])
     low = int(low.group(0) if low is not None else None)
     
-    high = re.search(r'\d+', trackers['tracker_1']['propHigh'])
+    high = re.search(r'\d+', dictionary['propHigh'])
     high = int(high.group(0) if high is not None else None)
     
     if high == low:
         if high == 1:
-            size = 'small'
+            size = ['small']
         elif high == 2:
-            size = 'medium'
+            size = ['medium']
         else:
-            size = 'large'
+            size = ['large']
             
-    elif high > 2 and low > 1:
+    elif high > 2 and low == 2:
         size = ['medium' ,'large']
     
-    elif high == 2:
+    elif high == 2 and low == 1:
         size = ['small', 'medium']
         
+    else:
+        size =''
+        print('Error in determining size: please make sure high >= low')
     return size
 
 def filter_underpriced_flats(df):
