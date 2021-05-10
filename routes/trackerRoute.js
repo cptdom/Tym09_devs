@@ -39,7 +39,7 @@ router.route("/trackers").get((req, res) => {
         console.log("Data retrieved successfully")
     })
     .catch(error => {
-        console.log(`An error occured during data retrieval: ${error}`)
+        console.log(`An error occured during data retrieval: ${error.message}`)
     })
 })
 
@@ -52,7 +52,7 @@ router.delete("/delete/trackers/:id", (req, res) => {
         console.log(req.params)
     })
     .catch(error => {
-        console.log(`An error occured during data retrieval: ${error}`)
+        console.log(`An error occured during data retrieval: ${error.message}`)
     })
 })
 

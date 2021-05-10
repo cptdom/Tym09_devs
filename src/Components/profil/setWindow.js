@@ -63,25 +63,10 @@ const SetWindow = (props) => {
         window.alert(`Tracker ${toPush.name} odeslán.`)
     }
 
-    // const buttonHandler = (event) => {
-    //     event.preventDefault()
-    //     const toPush = Object.assign(state);
-    //     axios.post('/realquik.json', toPush)
-    //     .then( response => {
-    //         console.log(`Data sent successfully with the following message: ${response.data}`);
-    //     })
-    //     .catch(error => {
-    //         console.log(`An error occured with the following description: ${error}`)
-    //         window.alert(`Někde se stala chyba, tracker ${toPush.name} nebyl uložen.`)
-    //     })
-    //     window.confirm(`Opravdu chcete odeslat tracker ${toPush.name}?`) && props.closeClick()
-    //     window.alert(`Tracker ${toPush.name} odeslán.`)
-    // }
 
     let proportionsConstrainedArray = proportionsArray.slice(
         0,
         proportionsArray.indexOf(state.propHigh)+1);
-
 
 
     return (
