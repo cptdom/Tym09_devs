@@ -48,7 +48,7 @@ const Trackers = (props) => {
             <h3>Hlídače</h3>
             <p className="Refresh" onClick={listingHandler}>obnovit seznam</p>
             {Object.keys(state.data).length>0 ? null : <p className="RefreshAlert">Obnovte seznam nebo vytvořte hlídače</p>}
-            {Object.keys(state.data).map(item => (
+            {Object.keys(state.data).reverse().map(item => (
                 <SingleTracker name={state.data[item].name} key={state.data[item].name}
                     clicked={() => props.passed(state.data[item], item)}/>
                 ))}
