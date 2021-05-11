@@ -3,5 +3,6 @@
 *.json
 *.pickle
 *.xlsx
+*.jpg
 .idea/
 .ipynb_checkpoints/

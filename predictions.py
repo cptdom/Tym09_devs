@@ -18,30 +18,15 @@ DEBUG = True
 if CREATE_TEST_JSON:
     test_json = {'tracker_1': 
                  { 'city': 'Praha',
-                  'district': 'Praha 3',
+                  'district': 'Praha 8',
                   'email': 'jachym.dvorak@seznam.cz',
                   'name': 'Malé byty',
-                  'propHigh': '2+1',
-                  'propLow': '1+kk',
-                  'schedule': 1
-                  }, 'tracker_2': 
-                 { 'city': 'Praha',
-                  'district': 'Praha 4',
-                  'email': 'jachym.dvorak@seznam.cz',
-                  'name': 'Velké byty',
-                  'propHigh': '3+1',
-                  'propLow': '3+kk',
-                  'schedule': 1
-                  }, 'tracker_3': 
-                 { 'city': 'Praha',
-                  'district': 'Praha 1',
-                  'email': 'jachym.dvorak@seznam.cz',
-                  'name': 'Střední byty',
-                  'propHigh': '3+1',
-                  'propLow': '2+kk',
+                  'propHigh': '4+1',
+                  'propLow': '1+1',
                   'schedule': 1
                   }
                  }
+
     
     with open('test_json.json', 'w') as f:
         json.dump(test_json, f)
@@ -195,9 +180,12 @@ def return_size_from_input_json(dictionary):
     elif high == 2 and low == 1:
         size = ['small', 'medium']
         
+    elif high > 3 and low == 1:
+        size = ['small', 'medium', 'large']
+        
     else:
         size =''
-        print('Error in determining size: please make sure high >= low')
+        print('\nError in determining size: please make sure high >= low')
     return size
 
 def filter_underpriced_flats(df):
@@ -251,7 +239,7 @@ def generate_recommendations_for_each_tracker(dataset, request, number_of_flats 
     
     return recommendations
 
-recommendations = generate_recommendations_for_each_tracker(df, trackers, 5)
+recommendations = generate_recommendations_for_each_tracker(df, trackers, 10)
 
 with open('recommendations.json', 'w') as out:
     json.dump(recommendations, out)
@@ -279,3 +267,5 @@ def get_all_underpriced_flats(recommendations, to_excel = False):
     
     if to_excel:
         underpriced_flats.to_excel('podcenene_byty.xlsx')
+
+get_all_underpriced_flats(recommendations, to_excel = True)
