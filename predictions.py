@@ -184,7 +184,7 @@ def return_size_from_input_json(dictionary):
         size = ['small', 'medium', 'large']
         
     else:
-        size =''
+        size = ['']
         print('\nError in determining size: please make sure high >= low')
     return size
 
