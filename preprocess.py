@@ -14,8 +14,8 @@ import re
 from sklearn.impute import SimpleImputer
 import category_encoders as ce
 
-username = 'xdvoj13'
-password = 'xdvoj13MONGO'
+username = '*'
+password = '*'
 client = MongoClient(f'mongodb+srv://{username}:{password}@cluster0.mtfak.mongodb.net/myFirstDatabase')
 db = client.reality
 df = pd.DataFrame(list(db.masterdata.find()))
