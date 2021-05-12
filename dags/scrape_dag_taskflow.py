@@ -21,39 +21,43 @@ default_args = {
 @dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['scraper', 'mongo'])
 def scrape_taskflow():
   @task()
-  def remax_task():
+  def remax_task(dummy):
     return remax_scrape()
 
   @task()
-  def prazskereality_task():
+  def prazskereality_task(dummy):
     return prazskereality_scrape()
 
   @task()
-  def bezrealitky_task():
+  def bezrealitky_task(dummy):
     return bezrealitky_scrape()
 
   @task()
-  def idnes_task():
+  def idnes_task(dummy):
     return idnes_scrape()
 
   @task()
-  def sreality_task():
+  def sreality_task(dummy):
     return sreality_scrape()
 
   @task()
-  def merge_mongo_push(data):
-    df = pd.DataFrame()
-    for s_name, s_df in data.items():
-      print(f"MERGING {s_name}...")
-      df = df.append(s_df)
-
-    print(f"MERGED...")
-    df['date_updated'] = pd.to_datetime('today').normalize()
-    df.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
-    print(df)
-    docs = df.to_dict('records')
+  def mongo_prepare():
     mongo = MongoHook(conn_id='mongo_reality')
-    # insert into 'master' collection while ignoring duplicate errors
+    # truncate 'current' collection and insert current data
+    mongo.delete_many(
+      filter_doc={},
+      mongo_collection=default_args['mongo_current_collection'],
+      mongo_db=default_args['mongo_dbname']
+    )
+    return True
+
+  @task()
+  def mongo_push(data):
+    data['date_updated'] = pd.to_datetime('today').normalize()
+    data.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
+    docs = data.to_dict('records')
+
+    mongo = MongoHook(conn_id='mongo_reality')
     try:
       mongo.insert_many(
         docs=docs,
@@ -66,12 +70,6 @@ def scrape_taskflow():
     except Exception as e:
       print({'error': str(e)})
 
-    # truncate 'current' collection and insert current data
-    mongo.delete_many(
-      filter_doc={},
-      mongo_collection=default_args['mongo_current_collection'],
-      mongo_db=default_args['mongo_dbname']
-    )
     mongo.insert_many(
       docs=docs,
       mongo_collection=default_args['mongo_current_collection'],
@@ -79,12 +77,15 @@ def scrape_taskflow():
     )
 
   data = {
-    'remax': remax_task(),
-    'prazskereality': prazskereality_task(),
-    'bezrealitky': bezrealitky_task(),
-    'idnes': idnes_task(),
-    'sreality': sreality_task()
+    'remax': remax_task,
+    'prazskereality': prazskereality_task,
+    'bezrealitky': bezrealitky_task,
+    'idnes': idnes_task,
+    'sreality': sreality_task
   }
-  merge_mongo_push(data)
+
+  res = mongo_prepare()
+  for name,fn in data.items():
+    mongo_push(fn(res))
 
 scrape_dag_taskflow = scrape_taskflow()
