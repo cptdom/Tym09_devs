@@ -116,6 +116,8 @@ def scrape_apartment(url):
   if not apart['price'] or apart['price'] == 'Info o ceně u RK':
     return None
 
+  equipped = najdi_parameter(page_soup, "Vybaveno:") == "Ano"
+  apart['equipment'] = True if not apart['equipment'] and equipped else apart['equipment']
   apart['floor'] = re.findall(r'\d', apart['floor'])[0]
   apart['area'] = get_meters(apart['area'])
   apart['address'] = get_address(apart['address'])
