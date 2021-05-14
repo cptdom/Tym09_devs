@@ -21,8 +21,6 @@ FIND_PARAMETERS = {
   'state': 'Stav objektu:',
   'equipment': 'Vybavení:',
   'elevator': 'Výtah:',
-  'electricity': 'Elektřina:',
-  'gas': 'Plyn:',
   'loggia': 'Lodžie:',
   'owner': 'Vlastnictví:',
   'balcony': 'Balkón:',

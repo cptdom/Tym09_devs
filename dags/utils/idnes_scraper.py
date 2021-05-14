@@ -16,12 +16,9 @@ PAR_TBL_HEADINGS = {
   'Podlaží': 'floor',
   'Počet podlaží budovy': 'floor_max',
   'Sklep': 'basement',
-  'Topení': 'heating',
   'Balkon': 'balcony',
   'Terasa': 'terrace',
   'Lokalita objektu': 'locality',
-  'Elektřina': 'electricity',
-  'Plyn': 'gas',
   'Vybavení': 'equipment',
   'Výtah': 'elevator',
   'PENB': 'penb'
