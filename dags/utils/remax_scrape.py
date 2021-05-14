@@ -73,11 +73,6 @@ def get_street(row):
   return street.group(1) if street else None
 
 
-# convert Y to true N to false
-def clean_elevator(row):
-  return row == 'Ano'
-
-
 def clean_basement(row):
   if row != 'null':
     row = True
@@ -122,7 +117,6 @@ def scrape_apartment(url):
   apart['price'] = fix_price(apart['price'])
   apart['city'] = get_city(apart['address'])
   apart['street'] = get_street(apart['address'])
-  apart['elevator'] = clean_elevator(apart['elevator'])
   apart['basement'] = clean_basement(apart['basement'])
 
   return apart

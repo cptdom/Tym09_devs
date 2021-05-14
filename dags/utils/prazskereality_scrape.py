@@ -23,7 +23,6 @@ PAR_TBL_HEADINGS = {
   'Garáž': 'garage'
 }
 URL_BASE = 'https://www.prazskereality.cz'
-BOOL_FEATURES = ['basement', 'elevator', 'barrier_free', 'terrace', 'balcony']
 MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
 BS_PARSER = 'html.parser'
 
@@ -75,10 +74,6 @@ def scrape_apartment(apart_url):
   for k, v in apart.items():
     if isinstance(v, str):
       apart[k] = v.strip()
-
-  # bool features
-  for f in BOOL_FEATURES:
-    apart[f] = True if f in apart.keys() and apart[f] and apart[f].lower() == "ano" else False
 
   if not apart['price'] or apart['price'] == 'Info o ceně u RK':
     return None

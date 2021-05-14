@@ -28,10 +28,6 @@ PAR_TBL_HEADINGS = {
   'Internet': 'internet'
 }
 
-# in this case some features are bool, some strings > bool
-MIXED_BOOL_FEATURES = ['balcony', 'terrace']
-# bool only features - either True (checkmark) or missing
-BOOL_FEATURES = ['basement', 'internet', 'elevator']
 BS_PARSER = 'lxml'
 
 URL_BASE = 'https://reality.idnes.cz'
@@ -96,12 +92,6 @@ def scrape_apartment(apart_url):
   for k, v in apart.items():
     if isinstance(v, str):
       apart[k] = v.strip()
-
-  # for f in MIXED_BOOL_FEATURES:
-  #   apart[f] = bool(apart[f] or isinstance(apart[f], str))
-
-  for f in BOOL_FEATURES:
-    apart[f] = bool(apart[f])
 
   if not apart['price'] or apart['price'] == 'Cena na vyžádání':
     return None
