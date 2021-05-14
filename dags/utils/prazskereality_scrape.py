@@ -19,7 +19,8 @@ PAR_TBL_HEADINGS = {
   'Bezbariérový': 'barrier_free',
   'Patro': 'floor',
   'Energetická nárocnost budovy': 'penb',
-  'Terasa': 'terrace'
+  'Terasa': 'terrace',
+  'Garáž': 'garage'
 }
 URL_BASE = 'https://www.prazskereality.cz'
 BOOL_FEATURES = ['basement', 'elevator', 'barrier_free', 'terrace', 'balcony']

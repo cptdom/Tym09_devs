@@ -106,6 +106,7 @@ def scrape_apartment(apart_url):
   if not apart['price'] or apart['price'] == 'Cena na vyžádání':
     return None
 
+  apart['garage'] = True if find_parameter(page_soup, 'Parkování') == 'garáž' else None
   apart['area'] = get_meters(apart['area'])
   apart['price'] = fix_price(apart['price'])
   apart['size'] = get_size(apart['title'])

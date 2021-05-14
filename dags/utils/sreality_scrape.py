@@ -27,7 +27,8 @@ FIND_PARAMETERS = {
   'loggia': 'Lodžie:',
   'owner': 'Vlastnictví:',
   'balcony': 'Balkón:',
-  'terrace': 'Terasa:'
+  'terrace': 'Terasa:',
+  'garage': 'Garáž:'
 }
 
 MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'
