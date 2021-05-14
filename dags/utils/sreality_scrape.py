@@ -30,7 +30,8 @@ FIND_PARAMETERS = {
   'doprava': 'Doprava:',
   'voda': 'Voda:',
   'odpad': 'Odpad:',
-  'owner': 'Vlastnictví:'
+  'owner': 'Vlastnictví:',
+  'balcony': 'Balkón:'
 }
 
 MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'

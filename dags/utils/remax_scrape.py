@@ -36,7 +36,8 @@ FIND_PARAMETERS = {
   'odpad': 'Odpad:',
   'obcanska_vybavenost': 'Občanská vybavenost:',
   'size': 'Dispozice:',
-  'owner': 'Vlastnictví:'
+  'owner': 'Vlastnictví:',
+  'balcony': 'Balkon:'
 }
 
 
