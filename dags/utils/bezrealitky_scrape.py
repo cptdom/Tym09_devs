@@ -28,9 +28,9 @@ PAR_TBL_HEADINGS = {
   'Garáž:': 'garage'
 }
 BS_PARSER = 'lxml'
-URL_BASE = 'https://www.bezrealitky.cz/'
-MAIN_URL = f'{URL_BASE}vypis/nabidka-prodej/byt/praha'
-DEBUG_URL = f'{URL_BASE}vypis/nabidka-prodej/byt/praha/praha-hostivar'
+URL_BASE = 'https://www.bezrealitky.cz'
+MAIN_URL = f'{URL_BASE}/vypis/nabidka-prodej/byt/praha'
+DEBUG_URL = f'{URL_BASE}/vypis/nabidka-prodej/byt/praha/praha-hostivar'
 
 CHR_OPTS = Options()
 CHR_OPTS.add_argument('--headless')
@@ -130,3 +130,5 @@ def bezrealitky_scrape(debug=False):
   aparts_df = pd.DataFrame(aparts)
   aparts_df['source'] = 'bezrealitky'
   return aparts_df
+
+res = bezrealitky_scrape(debug=True)
