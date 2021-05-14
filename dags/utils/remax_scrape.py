@@ -29,7 +29,6 @@ FIND_PARAMETERS = {
   'electricity': 'Elektřina:',
   'gas': 'Plyn:',
   'loggia': 'Lodžie:',
-  'doprava': 'Doprava:',
   'voda': 'Voda:',
   'odpad': 'Odpad:',
   'obcanska_vybavenost': 'Občanská vybavenost:',
