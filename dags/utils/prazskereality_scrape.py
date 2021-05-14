@@ -16,7 +16,6 @@ PAR_TBL_HEADINGS = {
   'Balkón': 'balcony',
   'Sklep': 'basement',
   'Výtah': 'elevator',
-  'Bezbariérový': 'barrier_free',
   'Patro': 'floor',
   'Energetická nárocnost budovy': 'penb',
   'Terasa': 'terrace',
