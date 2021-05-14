@@ -5,32 +5,18 @@ from sklearn.impute import SimpleImputer
 import category_encoders as ce
 
 COLS_TO_DROP = ['floor_area',
-                'locality',
-                'building_state',
                 'garage',
-                'parking',
-                'obcanska_vybavenost',
-                'odpad',
-                'voda',
-                'doprava',
-                'umistneni_objektu',
                 'loggia',
-                'gas',
-                'annual_electricity',
-                'electricity',
-                'heating',
-                'internet',
                 'floor_max',
                 'date_updated',
-                'barrier_free',
                 'equipment',
-                'updated',
                 'address',
                 'title',
                 'city',
                 'size',
                 'street',
-                'description']
+                'description',
+                'source']
 
 
 ### helper functions

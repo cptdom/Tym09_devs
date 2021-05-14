@@ -12,28 +12,18 @@ PAR_TBL_HEADINGS = {
   'Užitná plocha': 'area',
   'Konstrukce budovy': 'building_type',
   'Stav bytu': 'state',
-  'Stav budovy': 'building_state',
   'Vlastnictví': 'owner',
   'Podlaží': 'floor',
   'Počet podlaží budovy': 'floor_max',
   'Sklep': 'basement',
-  'Topení': 'heating',
   'Balkon': 'balcony',
+  'Lodžie': 'loggia',
   'Terasa': 'terrace',
-  'Lokalita objektu': 'locality',
-  'Elektřina': 'electricity',
-  'Parkování': 'parking',
-  'Plyn': 'gas',
   'Vybavení': 'equipment',
   'Výtah': 'elevator',
-  'PENB': 'penb',
-  'Internet': 'internet'
+  'PENB': 'penb'
 }
 
-# in this case some features are bool, some strings > bool
-MIXED_BOOL_FEATURES = ['balcony', 'terrace']
-# bool only features - either True (checkmark) or missing
-BOOL_FEATURES = ['basement', 'internet', 'elevator']
 BS_PARSER = 'lxml'
 
 URL_BASE = 'https://reality.idnes.cz'
@@ -63,7 +53,7 @@ def get_apartment_links(debug):
     print(f'Scraping page: {i_page}')
     page_url = f'{url}/?page={i_page}' if i_page > 0 else url  # first page does not have page GET parameter
     soup = BeautifulSoup(requests.get(page_url).content, BS_PARSER)
-    ap_list_elem = soup.select('a.c-list-products__imgs')
+    ap_list_elem = soup.select('a.c-products__link')
     if not ap_list_elem:
       break  # no more apartments to scrape
     for link in ap_list_elem:
@@ -99,15 +89,10 @@ def scrape_apartment(apart_url):
     if isinstance(v, str):
       apart[k] = v.strip()
 
-  for f in MIXED_BOOL_FEATURES:
-    apart[f] = True if apart[f] or isinstance(apart[f], str) else False
-
-  for f in BOOL_FEATURES:
-    apart[f] = bool(apart[f])
-
   if not apart['price'] or apart['price'] == 'Cena na vyžádání':
     return None
 
+  apart['garage'] = True if find_parameter(page_soup, 'Parkování') == 'garáž' else None
   apart['area'] = get_meters(apart['area'])
   apart['price'] = fix_price(apart['price'])
   apart['size'] = get_size(apart['title'])
@@ -116,6 +101,8 @@ def scrape_apartment(apart_url):
   apart['city'] = get_city(apart['address'])
   apart['floor'] = get_floor(apart['floor'])
   apart['floor_max'] = get_floor_max(apart['floor_max'])
+  # if apartment state is missing, try to input building state
+  apart['state'] = find_parameter(page_soup, 'Stav budovy') if not apart['state'] else apart['state']
 
   return apart
 
@@ -197,5 +184,6 @@ def idnes_scrape(debug=False):
     aparts.append(scrape_apartment(link))
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'idnes'
 
   return aparts_df

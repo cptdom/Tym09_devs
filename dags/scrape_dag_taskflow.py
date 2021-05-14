@@ -8,17 +8,11 @@ from utils.remax_scrape import remax_scrape
 from utils.bezrealitky_scrape import bezrealitky_scrape
 from utils.sreality_scrape import sreality_scrape
 from utils.idnes_scraper import idnes_scrape
+from utils.vars import DEFAULT_ARGS
 
 import pandas as pd
 
-default_args = {
-  'owner': 'airflow',
-  'mongo_master_collection': 'masterdata',
-  'mongo_current_collection': 'currentdata',
-  'mongo_dbname': 'reality'
-}
-
-@dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['scraper', 'mongo'])
+@dag(default_args=DEFAULT_ARGS, schedule_interval=None, start_date=days_ago(2), tags=['scraper', 'mongo'])
 def scrape_taskflow():
   @task()
   def remax_task(dummy):
@@ -46,8 +40,8 @@ def scrape_taskflow():
     # truncate 'current' collection and insert current data
     mongo.delete_many(
       filter_doc={},
-      mongo_collection=default_args['mongo_current_collection'],
-      mongo_db=default_args['mongo_dbname']
+      mongo_collection=DEFAULT_ARGS['mongo_current_collection'],
+      mongo_db=DEFAULT_ARGS['mongo_dbname']
     )
     return True
 
@@ -56,25 +50,24 @@ def scrape_taskflow():
     data['date_updated'] = pd.to_datetime('today').normalize()
     data.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
     docs = data.to_dict('records')
+    if docs:
+      push_docs(docs, DEFAULT_ARGS['mongo_master_collection'])
+      push_docs(docs, DEFAULT_ARGS['mongo_current_collection'])
 
+  def push_docs(docs, collection):
     mongo = MongoHook(conn_id='mongo_reality')
     try:
       mongo.insert_many(
         docs=docs,
-        mongo_collection=default_args['mongo_master_collection'],
-        mongo_db=default_args['mongo_dbname'],
+        mongo_collection=collection,
+        mongo_db=DEFAULT_ARGS['mongo_dbname'],
         ordered=False
       )
     except BulkWriteError as bwe:
       print("Some duplicates were found and skipped.")
     except Exception as e:
       print({'error': str(e)})
-
-    mongo.insert_many(
-      docs=docs,
-      mongo_collection=default_args['mongo_current_collection'],
-      mongo_db=default_args['mongo_dbname']
-    )
+    return True
 
   data = {
     'remax': remax_task,

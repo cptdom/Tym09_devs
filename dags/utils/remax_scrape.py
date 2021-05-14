@@ -22,20 +22,14 @@ FIND_PARAMETERS = {
   'floor': 'Číslo podlaží:',
   'floor_max': 'Počet podlaží v objektu:',
   'state': 'Stav objektu:',
-  'internet': 'Telekomunikace:',
   'equipment': 'Vybavení:',
   'elevator': 'Výtah:',
-  'heating': 'Topení:',
-  'electricity': 'Elektřina:',
-  'annual_electricity': 'Měrná vypočtená roční spotřeba energie v kWh/m²/rok:',
-  'gas': 'Plyn:',
   'loggia': 'Lodžie:',
-  'umistneni_objektu': 'Umístění objektu:',
-  'doprava': 'Doprava:',
-  'voda': 'Voda:',
-  'odpad': 'Odpad:',
-  'obcanska_vybavenost': 'Občanská vybavenost:',
-  'size': 'Dispozice:'
+  'size': 'Dispozice:',
+  'owner': 'Vlastnictví:',
+  'balcony': 'Balkon:',
+  'terrace': 'Terasa:',
+  'garage': 'Garáž:'
 }
 
 
@@ -75,11 +69,6 @@ def get_street(row):
   return street.group(1) if street else None
 
 
-# convert Y to true N to false
-def clean_elevator(row):
-  return row == 'Ano'
-
-
 def clean_basement(row):
   if row != 'null':
     row = True
@@ -99,7 +88,9 @@ def scrape_apartment(url):
   for e in page_soup.findAll('br'):
     e.extract()
 
-  # apart['title'] = page_soup.select_one('h4.property-title > h1 > span > span').get_text().strip()
+  title_elem = page_soup.select_one('h1.pd-header__title')
+  apart['title'] = title_elem.contents[0].split(',')[0].strip() if title_elem else None
+
   apart['link'] = url
   price_elem = page_soup.select_one('div.mortgage-calc__RE-price > p')
   apart['price'] = price_elem.get_text().strip() if price_elem else None
@@ -113,6 +104,8 @@ def scrape_apartment(url):
   if not apart['price'] or apart['price'] == 'Info o ceně u RK':
     return None
 
+  equipped = najdi_parameter(page_soup, "Vybaveno:") == "Ano"
+  apart['equipment'] = True if not apart['equipment'] and equipped else apart['equipment']
   apart['floor'] = re.findall(r'\d', apart['floor'])[0]
   apart['area'] = get_meters(apart['area'])
   apart['address'] = get_address(apart['address'])
@@ -120,7 +113,6 @@ def scrape_apartment(url):
   apart['price'] = fix_price(apart['price'])
   apart['city'] = get_city(apart['address'])
   apart['street'] = get_street(apart['address'])
-  apart['elevator'] = clean_elevator(apart['elevator'])
   apart['basement'] = clean_basement(apart['basement'])
 
   return apart
@@ -163,5 +155,6 @@ def remax_scrape(debug=False):
 
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'remax'
 
   return aparts_df

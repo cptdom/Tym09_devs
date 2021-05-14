@@ -19,17 +19,13 @@ FIND_PARAMETERS = {
   'penb': 'Energetická náročnost budovy:',
   'floor': 'Podlaží:',
   'state': 'Stav objektu:',
-  'internet': 'Telekomunikace:',
   'equipment': 'Vybavení:',
   'elevator': 'Výtah:',
-  'parking': 'Parkování:',
-  'electricity': 'Elektřina:',
-  'gas': 'Plyn:',
   'loggia': 'Lodžie:',
-  'umistneni_objektu': 'Umístění objektu:',
-  'doprava': 'Doprava:',
-  'voda': 'Voda:',
-  'odpad': 'Odpad:'
+  'owner': 'Vlastnictví:',
+  'balcony': 'Balkón:',
+  'terrace': 'Terasa:',
+  'garage': 'Garáž:'
 }
 
 MAIN_URL = 'https://www.sreality.cz/hledani/prodej/byty/praha?'
@@ -101,17 +97,6 @@ def get_size(row):
   return size.group(1) if size else None
 
 
-# convert Y to true N to false
-def clean_elevator(row):
-  if row == 'Y':
-    row = True
-  elif row == 'N':
-    row = False
-  else:
-    row = row
-  return row
-
-
 def is_not_nan(string):
   return string == string
 
@@ -172,7 +157,6 @@ def scrape_apartment(url):
   apart['city'] = get_city(apart['address'])
   apart['street'] = get_street(apart['address'])
   apart['size'] = get_size(apart['title'])
-  apart['elevator'] = clean_elevator(apart['elevator'])
   apart['basement'] = clean_basement(apart['basement'])
   apart['penb'] = get_penb(apart['penb'])
   apart['floor'] = get_floor(apart['floor'])
@@ -211,4 +195,5 @@ def sreality_scrape(debug=False):
 
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'sreality'
   return aparts_df

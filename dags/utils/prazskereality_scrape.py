@@ -6,7 +6,6 @@ from collections import Counter
 
 PAR_TBL_HEADINGS = {
   'Cena': 'price',
-  'Aktualizace': 'updated',
   'Dispozice': 'size',
   'Užitná plocha': 'area',
   'Forma vlastnictví': 'owner',
@@ -16,13 +15,13 @@ PAR_TBL_HEADINGS = {
   'Balkón': 'balcony',
   'Sklep': 'basement',
   'Výtah': 'elevator',
-  'Bezbariérový': 'barrier_free',
   'Patro': 'floor',
   'Energetická nárocnost budovy': 'penb',
-  'Terasa': 'terrace'
+  'Terasa': 'terrace',
+  'Garáž': 'garage',
+  'Lodžie': 'loggia'
 }
 URL_BASE = 'https://www.prazskereality.cz'
-BOOL_FEATURES = ['basement', 'elevator', 'barrier_free', 'terrace', 'balcony']
 MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
 BS_PARSER = 'html.parser'
 
@@ -74,10 +73,6 @@ def scrape_apartment(apart_url):
   for k, v in apart.items():
     if isinstance(v, str):
       apart[k] = v.strip()
-
-  # bool features
-  for f in BOOL_FEATURES:
-    apart[f] = True if f in apart.keys() and apart[f] and apart[f].lower() == "ano" else False
 
   if not apart['price'] or apart['price'] == 'Info o ceně u RK':
     return None
@@ -165,4 +160,5 @@ def prazskereality_scrape():
     aparts.append(scrape_apartment(link))
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'prazskereality'
   return aparts_df
