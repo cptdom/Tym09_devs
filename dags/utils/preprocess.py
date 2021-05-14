@@ -7,7 +7,6 @@ import category_encoders as ce
 COLS_TO_DROP = ['floor_area',
                 'locality',
                 'garage',
-                'parking',
                 'loggia',
                 'gas',
                 'electricity',

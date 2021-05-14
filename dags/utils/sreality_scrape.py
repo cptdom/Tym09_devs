@@ -22,7 +22,6 @@ FIND_PARAMETERS = {
   'internet': 'Telekomunikace:',
   'equipment': 'Vybavení:',
   'elevator': 'Výtah:',
-  'parking': 'Parkování:',
   'electricity': 'Elektřina:',
   'gas': 'Plyn:',
   'loggia': 'Lodžie:',
