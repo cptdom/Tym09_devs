@@ -6,7 +6,6 @@ from collections import Counter
 
 PAR_TBL_HEADINGS = {
   'Cena': 'price',
-  'Aktualizace': 'updated',
   'Dispozice': 'size',
   'Užitná plocha': 'area',
   'Forma vlastnictví': 'owner',
