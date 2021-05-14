@@ -18,7 +18,6 @@ PAR_TBL_HEADINGS = {
   'Sklep': 'basement',
   'Balkon': 'balcony',
   'Terasa': 'terrace',
-  'Lokalita objektu': 'locality',
   'Vybavení': 'equipment',
   'Výtah': 'elevator',
   'PENB': 'penb'

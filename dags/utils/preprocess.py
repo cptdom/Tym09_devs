@@ -5,7 +5,6 @@ from sklearn.impute import SimpleImputer
 import category_encoders as ce
 
 COLS_TO_DROP = ['floor_area',
-                'locality',
                 'garage',
                 'loggia',
                 'floor_max',
