@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May  9 14:01:19 2021
-
-@author: ZZ03MG668
-"""
-
 import json
 import pickle
 import pandas as pd
@@ -12,72 +5,9 @@ import numpy as np
 import argparse
 import re
 
-CREATE_TEST_JSON = True
-DEBUG = True
-
-if CREATE_TEST_JSON:
-    test_json = {'tracker_1': 
-                 { 'city': 'Praha',
-                  'district': 'Praha 8',
-                  'email': 'jachym.dvorak@seznam.cz',
-                  'name': 'Malé byty',
-                  'propHigh': '4+1',
-                  'propLow': '1+1',
-                  'schedule': 1
-                  }
-                 }
-
-    
-    with open('test_json.json', 'w') as f:
-        json.dump(test_json, f)
-
-if DEBUG is not True:
-# Create the parser
-    my_parser = argparse.ArgumentParser(description='Please list files to use')
-    
-    # Add the arguments
-    my_parser.add_argument('-t',
-                          '--Tracker',
-                           metavar = '',
-                           type=str,
-                           help='Specify name/path of tracker json file')
-    
-    my_parser.add_argument('-m',
-                           '--Model',
-                           metavar = '',
-                           type=str,
-                           help='Specify name/path of trained models pickle file')
-    
-    my_parser.add_argument('-d',
-                           '--Database',
-                           metavar = '',
-                           type=str,
-                           help='Specify name/path of database of scraped flats')
-    
-    args = my_parser.parse_args()
-    
-    trackers = args.Tracker
-    models = args.Model
-    database = args.Database
-     
-# LOAD DATA
-
-if DEBUG:
-    trackers = 'test_json.json'
-    models = 'all_models_dict_v2.pickle'
-    database = 'processed_dataset.csv'
-
-with open(trackers, 'r') as f:
-    trackers = json.load(f)
-    
-with open(models, 'rb') as f:
-    model_dict = pickle.load(f)
-    
-df = pd.read_csv(database, index_col = 0)
-
+from airflow.providers.mongo.hooks.mongo import MongoHook
 
 def predict(model_dict, model_type, data):
-    
     '''
     predicts price of a single flat based on trained model
     
@@ -88,13 +18,13 @@ def predict(model_dict, model_type, data):
     '''
     return ((0.35 * model_dict[model_type]['stacker'].predict(data)) +
             (0.25 * model_dict[model_type]['XGBRegressor'].predict(data)) +
-            (0.15 * model_dict[model_type]['BaggingRegressor'].predict(data)) +  
+            (0.15 * model_dict[model_type]['BaggingRegressor'].predict(data)) +
             (0.25 * model_dict[model_type]['LGBMRegressor'].predict(data)))
-    
+
+
 # PREDICT PRICES
 
 def extract_room_size_as_string(row):
-    
     '''
     returns a string of 'low', 'medium' or 'large' based on amount of rooms of a flat 
     is meant to be used as df.apply(<this func>)
@@ -102,7 +32,7 @@ def extract_room_size_as_string(row):
     row = row of dataframe
     
     '''
-    
+
     if '2' in str(row):
         row = 'medium'
     elif '3' in str(row) or '4' in str(row):
@@ -113,8 +43,8 @@ def extract_room_size_as_string(row):
         row = pd.NA
     return row
 
+
 def predict_prices_for_all_flats(df, model_dict):
-    
     '''
     predicts prices for all flats in specified file based on trained dictionary of models (a blender of 4 models,
                                                                                            for each size (small, medium, large))
@@ -125,34 +55,27 @@ def predict_prices_for_all_flats(df, model_dict):
     '''
 
     df['rooms_string'] = df['rooms'].apply(extract_room_size_as_string)
-    df = df.dropna(subset = ['rooms_string'])    
+    df = df.dropna(subset=['rooms_string'])
 
     predictions = []
 
     df_with_predictions = df.copy()
-        
+
     from tqdm import tqdm
-    
-    for i, row in tqdm(df[df.columns[~df.columns.isin(['price','district'])]].iterrows()):
-        
+
+    for i, row in tqdm(df[df.columns[~df.columns.isin(['price', 'district'])]].iterrows()):
         s = row['rooms_string']
         flat = np.array(row[:-1]).reshape(1, -1)
-        
-        if s == 'small':
-            prediction = predict(model_dict, s, flat)
-        elif s == 'medium':
-            prediction = predict(model_dict, s, flat)    
-        elif s == 'large':
-            prediction = predict(model_dict, s, flat)   
-    
+
+        prediction = predict(model_dict, s, flat)
         predictions.append(int(prediction))
-    
+
     df_with_predictions['predicted'] = predictions
-    
+
     return df_with_predictions
 
+
 def return_size_from_input_json(dictionary):
-    
     '''
     returns size required by customer specified in tracker (based on high and low interval)
     
@@ -162,10 +85,10 @@ def return_size_from_input_json(dictionary):
 
     low = re.search(r'\d+', dictionary['propLow'])
     low = int(low.group(0) if low is not None else None)
-    
+
     high = re.search(r'\d+', dictionary['propHigh'])
     high = int(high.group(0) if high is not None else None)
-    
+
     if high == low:
         if high == 1:
             size = ['small']
@@ -173,40 +96,40 @@ def return_size_from_input_json(dictionary):
             size = ['medium']
         else:
             size = ['large']
-            
+
     elif high > 2 and low == 2:
-        size = ['medium' ,'large']
-    
+        size = ['medium', 'large']
+
     elif high == 2 and low == 1:
         size = ['small', 'medium']
-        
+
     elif high > 3 and low == 1:
         size = ['small', 'medium', 'large']
-        
+
     else:
         size = ['']
         print('\nError in determining size: please make sure high >= low')
     return size
 
-def filter_underpriced_flats(df):
-    
+
+def filter_underpriced_flats(df, model_dict):
     '''
     filters all flats and returns only the underpriced ones
     
     df = dataset of all scraped flats
     
     '''
-    
+
     underpriced_df = predict_prices_for_all_flats(df, model_dict)
-    
+
     underpriced_df = underpriced_df[underpriced_df['price'] < underpriced_df['predicted']]
-    
+
     underpriced_df['difference'] = underpriced_df['predicted'] - underpriced_df['price']
-    
+
     return underpriced_df
 
-def generate_recommendations_for_each_tracker(dataset, request, number_of_flats = 10):
-    
+
+def generate_recommendations_for_each_tracker(dataset, request, model_dict, number_of_flats=10):
     '''
     generates recommendations for each tracker id based on conditions set in that tracker
     
@@ -215,45 +138,42 @@ def generate_recommendations_for_each_tracker(dataset, request, number_of_flats 
     number_of_flats = how many flats to recommend (default 10)
     
     '''
-    
+
+    print('GENERATING RECOMMENDATIONS...')
     recommendations = {}
-    
-    underpriced_flats = filter_underpriced_flats(dataset)
-    
+
+    underpriced_flats = filter_underpriced_flats(dataset, model_dict)
+    # with open('./underpriced.pickle', 'rb') as f:
+    #     underpriced_flats = pickle.load(f)
+
     for tracker, data in request.items():
-    
         tracker_id = tracker
         size = return_size_from_input_json(data)
         district = data['district']
         email = data['email']
-        
+
         flats_temp = underpriced_flats[underpriced_flats['rooms_string'].isin(size) & \
-                                underpriced_flats['district'].eq(district)].sort_values('difference', ascending = False)
-            
+                                       underpriced_flats['district'].eq(district)].sort_values('difference',
+                                                                                               ascending=False)
+
         recommendations[tracker_id] = {'links': list(flats_temp[:number_of_flats].index),
                                        'email': email,
                                        'district': district,
                                        'difference': list(flats_temp.iloc[:number_of_flats]['difference']),
                                        'predicted_price': list(flats_temp.iloc[:number_of_flats]['predicted']),
                                        'actual_price': list(flats_temp.iloc[:number_of_flats]['price'])}
-    
+
     return recommendations
 
-recommendations = generate_recommendations_for_each_tracker(df, trackers, 10)
 
-with open('recommendations.json', 'w') as out:
-    json.dump(recommendations, out)
-    
-
-def get_all_underpriced_flats(recommendations, to_excel = False):
-    
+def get_all_underpriced_flats(recommendations, to_excel=False):
     l = []
     p = []
     a = []
     d = []
-    
+
     for tracker, values in recommendations.items():
-        #underpriced_flats['tracker'].append(tracker)
+        # underpriced_flats['tracker'].append(tracker)
         for li in values['links']:
             l.append(li)
         for pr in values['predicted_price']:
@@ -262,10 +182,28 @@ def get_all_underpriced_flats(recommendations, to_excel = False):
             a.append(ac)
         for di in values['difference']:
             d.append(di)
-        
+
     underpriced_flats = pd.DataFrame({'links': l, 'predicted_price': p, 'actual_price': a, 'difference': d})
-    
+
     if to_excel:
         underpriced_flats.to_excel('podcenene_byty.xlsx')
 
-get_all_underpriced_flats(recommendations, to_excel = True)
+    return underpriced_flats
+
+
+def run_apart_predictions(df_processed, default_args, n_predictions=5):
+    print('EVALUATING APARTMENT PRICES...')
+
+    # load pickled models
+    with open('./all_models_dict_v2.pickle', 'rb') as f:
+        model_dict = pickle.load(f)
+
+    mongo = MongoHook(conn_id='mongo_reality')
+    trackers_list = list(mongo.find(
+        mongo_collection=default_args['mongo_trackers_collection'],
+        query={},
+        mongo_db=default_args['mongo_trackers_dbname']
+    ))
+    trackers = {str(x['_id']): x for x in trackers_list}
+
+    return generate_recommendations_for_each_tracker(df_processed, trackers, model_dict, n_predictions)
