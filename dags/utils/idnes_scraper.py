@@ -17,6 +17,7 @@ PAR_TBL_HEADINGS = {
   'Počet podlaží budovy': 'floor_max',
   'Sklep': 'basement',
   'Balkon': 'balcony',
+  'Lodžie': 'loggia',
   'Terasa': 'terrace',
   'Vybavení': 'equipment',
   'Výtah': 'elevator',

@@ -18,7 +18,8 @@ PAR_TBL_HEADINGS = {
   'Patro': 'floor',
   'Energetická nárocnost budovy': 'penb',
   'Terasa': 'terrace',
-  'Garáž': 'garage'
+  'Garáž': 'garage',
+  'Lodžie': 'loggia'
 }
 URL_BASE = 'https://www.prazskereality.cz'
 MAIN_URL = f'{URL_BASE}/byty-na-prodej/praha'
