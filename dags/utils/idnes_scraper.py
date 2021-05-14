@@ -115,6 +115,8 @@ def scrape_apartment(apart_url):
   apart['city'] = get_city(apart['address'])
   apart['floor'] = get_floor(apart['floor'])
   apart['floor_max'] = get_floor_max(apart['floor_max'])
+  # if apartment state is missing, try to input building state
+  apart['state'] = find_parameter(page_soup, 'Stav budovy') if not apart['state'] else apart['state']
 
   return apart
 
