@@ -19,7 +19,6 @@ FIND_PARAMETERS = {
   'penb': 'Energetická náročnost budovy:',
   'floor': 'Podlaží:',
   'state': 'Stav objektu:',
-  'internet': 'Telekomunikace:',
   'equipment': 'Vybavení:',
   'elevator': 'Výtah:',
   'electricity': 'Elektřina:',

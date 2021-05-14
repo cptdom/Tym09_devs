@@ -24,8 +24,7 @@ PAR_TBL_HEADINGS = {
   'Plyn': 'gas',
   'Vybavení': 'equipment',
   'Výtah': 'elevator',
-  'PENB': 'penb',
-  'Internet': 'internet'
+  'PENB': 'penb'
 }
 
 BS_PARSER = 'lxml'

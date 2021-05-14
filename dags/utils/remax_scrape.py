@@ -22,7 +22,6 @@ FIND_PARAMETERS = {
   'floor': 'Číslo podlaží:',
   'floor_max': 'Počet podlaží v objektu:',
   'state': 'Stav objektu:',
-  'internet': 'Telekomunikace:',
   'equipment': 'Vybavení:',
   'elevator': 'Výtah:',
   'heating': 'Topení:',
