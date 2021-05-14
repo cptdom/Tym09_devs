@@ -98,8 +98,8 @@ def scrape_apartment(apart_url):
     if isinstance(v, str):
       apart[k] = v.strip()
 
-  for f in MIXED_BOOL_FEATURES:
-    apart[f] = True if apart[f] or isinstance(apart[f], str) else False
+  # for f in MIXED_BOOL_FEATURES:
+  #   apart[f] = bool(apart[f] or isinstance(apart[f], str))
 
   for f in BOOL_FEATURES:
     apart[f] = bool(apart[f])
