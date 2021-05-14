@@ -27,7 +27,6 @@ FIND_PARAMETERS = {
   'elevator': 'Výtah:',
   'heating': 'Topení:',
   'electricity': 'Elektřina:',
-  'annual_electricity': 'Měrná vypočtená roční spotřeba energie v kWh/m²/rok:',
   'gas': 'Plyn:',
   'loggia': 'Lodžie:',
   'umistneni_objektu': 'Umístění objektu:',
