@@ -12,7 +12,6 @@ PAR_TBL_HEADINGS = {
   'Užitná plocha': 'area',
   'Konstrukce budovy': 'building_type',
   'Stav bytu': 'state',
-  'Stav budovy': 'building_state',
   'Vlastnictví': 'owner',
   'Podlaží': 'floor',
   'Počet podlaží budovy': 'floor_max',
@@ -63,7 +62,7 @@ def get_apartment_links(debug):
     print(f'Scraping page: {i_page}')
     page_url = f'{url}/?page={i_page}' if i_page > 0 else url  # first page does not have page GET parameter
     soup = BeautifulSoup(requests.get(page_url).content, BS_PARSER)
-    ap_list_elem = soup.select('a.c-list-products__imgs')
+    ap_list_elem = soup.select('a.c-products__link')
     if not ap_list_elem:
       break  # no more apartments to scrape
     for link in ap_list_elem:
