@@ -130,5 +130,3 @@ def bezrealitky_scrape(debug=False):
   aparts_df = pd.DataFrame(aparts)
   aparts_df['source'] = 'bezrealitky'
   return aparts_df
-
-res = bezrealitky_scrape(debug=True)
