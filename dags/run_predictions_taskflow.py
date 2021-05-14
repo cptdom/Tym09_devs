@@ -4,19 +4,9 @@ from airflow.decorators import dag, task
 from utils.send_email import send_email_recommendations
 from utils.predictions import run_apart_predictions
 from utils.preprocess import prepare_data
+from utils.vars import DEFAULT_ARGS
 
-# TODO import default args from util to make them global across all dags
-default_args = {
-  'owner': 'airflow',
-  'mongo_master_collection': 'masterdata',
-  'mongo_current_collection': 'currentdata',
-  'mongo_extrafeatures_collection': 'extrafeatures',
-  'mongo_trackers_collection': 'trackers',
-  'mongo_dbname': 'reality',
-  'mongo_trackers_dbname': 'user_requests'
-}
-
-@dag(default_args=default_args, schedule_interval=None, start_date=days_ago(2), tags=['model', 'mongo', 'prediction'])
+@dag(default_args=DEFAULT_ARGS, schedule_interval=None, start_date=days_ago(2), tags=['model', 'mongo', 'prediction'])
 def run_predictions():
   @task()
   def prepare_model_data(default_args):
@@ -30,8 +20,8 @@ def run_predictions():
   def send_emails(recc):
     send_email_recommendations(recc)
 
-  data = prepare_model_data(default_args)
-  recc = predict(data, default_args)
+  data = prepare_model_data(DEFAULT_ARGS)
+  recc = predict(data, DEFAULT_ARGS)
   send_emails(recc)
 
 run_predictions_taskflow = run_predictions()
