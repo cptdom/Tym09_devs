@@ -100,7 +100,9 @@ def scrape_apartment(url):
   for e in page_soup.findAll('br'):
     e.extract()
 
-  # apart['title'] = page_soup.select_one('h4.property-title > h1 > span > span').get_text().strip()
+  title_elem = page_soup.select_one('h1.pd-header__title')
+  apart['title'] = title_elem.contents[0].split(',')[0].strip() if title_elem else None
+
   apart['link'] = url
   price_elem = page_soup.select_one('div.mortgage-calc__RE-price > p')
   apart['price'] = price_elem.get_text().strip() if price_elem else None
