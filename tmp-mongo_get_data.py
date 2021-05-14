@@ -1,5 +1,6 @@
 #%%
 import pandas as pd
+from pandas_profiling import ProfileReport
 from pymongo import MongoClient
 
 username = '*'
