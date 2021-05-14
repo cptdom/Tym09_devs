@@ -57,24 +57,25 @@ def scrape_taskflow():
     data.rename(columns={'link': '_id'}, inplace=True)  # use 'link' as unique id
     docs = data.to_dict('records')
 
-    mongo = MongoHook(conn_id='mongo_reality')
-    try:
+    if docs:
+      mongo = MongoHook(conn_id='mongo_reality')
+      try:
+        mongo.insert_many(
+          docs=docs,
+          mongo_collection=default_args['mongo_master_collection'],
+          mongo_db=default_args['mongo_dbname'],
+          ordered=False
+        )
+      except BulkWriteError as bwe:
+        print("Some duplicates were found and skipped.")
+      except Exception as e:
+        print({'error': str(e)})
+
       mongo.insert_many(
         docs=docs,
-        mongo_collection=default_args['mongo_master_collection'],
-        mongo_db=default_args['mongo_dbname'],
-        ordered=False
+        mongo_collection=default_args['mongo_current_collection'],
+        mongo_db=default_args['mongo_dbname']
       )
-    except BulkWriteError as bwe:
-      print("Some duplicates were found and skipped.")
-    except Exception as e:
-      print({'error': str(e)})
-
-    mongo.insert_many(
-      docs=docs,
-      mongo_collection=default_args['mongo_current_collection'],
-      mongo_db=default_args['mongo_dbname']
-    )
 
   data = {
     'remax': remax_task,
