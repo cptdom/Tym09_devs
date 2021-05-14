@@ -136,4 +136,5 @@ def bezrealitky_scrape(debug=False):
     print(f'[{i + 1}/{len(apart_links)}] Scraping apartment: {link}')
     aparts.append(scrape_apartment(link))
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'bezrealitky'
   return aparts_df

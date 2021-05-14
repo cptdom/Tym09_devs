@@ -29,7 +29,8 @@ COLS_TO_DROP = ['floor_area',
                 'city',
                 'size',
                 'street',
-                'description']
+                'description',
+                'source']
 
 
 ### helper functions

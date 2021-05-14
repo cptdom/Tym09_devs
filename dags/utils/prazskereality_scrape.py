@@ -165,4 +165,5 @@ def prazskereality_scrape():
     aparts.append(scrape_apartment(link))
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'prazskereality'
   return aparts_df

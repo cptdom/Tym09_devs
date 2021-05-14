@@ -212,4 +212,5 @@ def sreality_scrape(debug=False):
 
   aparts = [a for a in aparts if a]  # remove None values
   aparts_df = pd.DataFrame(aparts)
+  aparts_df['source'] = 'sreality'
   return aparts_df
