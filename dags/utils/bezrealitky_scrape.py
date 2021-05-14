@@ -79,7 +79,7 @@ def scrape_apartment(apart_url):
   apart['street'] = get_street(apart['address'])
   # use Novostavba: bool feature if state is missing
   new_bool = find_in_table(par_table, "Novostavba:") == "Ano"
-  apart['state'] = new_bool if not apart['state'] else None
+  apart['state'] = 'novostavba' if not apart['state'] and new_bool else None
 
   return apart
 
