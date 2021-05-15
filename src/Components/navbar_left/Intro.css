@@ -1,7 +1,7 @@
 
 .Intro {
     position: absolute;
-    margin-top: 30vh;
+    margin-top: 20vh;
     margin-left: 10vw;
     width: 550px;
     display: flex;
@@ -9,6 +9,33 @@
     align-items: center;
     z-index: -1;
 
+}
+
+.More {
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    background-color: rgba(0,0,0,0.3);
+    color: snow;
+    font-family: inherit;
+    margin-left: 100px;
+    margin-top: 400px;
+    text-align: center;
+    border-radius: 15px;;
+    transition: all 0.3s;
+    animation-duration: 2.5s;
+    animation-name: appear;
+
+}
+.More h2 {
+    margin: auto;
+}
+
+.More:hover {
+    cursor: pointer;
+    background-color: rgba(0,0,0,0);
+    font-size: 24px;
+    transform: translateY(-10px);
 }
 
 
@@ -46,5 +73,15 @@
 
     to {
         margin-left: 0;
+    }
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
     }
 }
