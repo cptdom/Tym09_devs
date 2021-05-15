@@ -7,15 +7,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: -1;
 
 }
 
 
 .Intro h1 {
+    position: relative;
     font-size: 48px;
     font-weight: 700;
     animation-duration: 2.5s;
     animation-name: slidein_fromleft;
+    z-index: -1;
 }
 
 .Intro p {
@@ -23,6 +26,7 @@
     font-weight: 400;
     animation-duration: 2.5s;
     animation-name: slidein_fromright;
+    z-index: -1;
 }
 
 @keyframes slidein_fromleft {

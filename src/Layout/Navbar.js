@@ -3,9 +3,30 @@ import Navitem from './Navitem';
 import './Navbar.css';
 import {NavLink} from 'react-router-dom';
 import {connect} from 'react-redux';
+import {useState} from 'react';
+import Modal from '../Components/modal/modal';
 
 
-const navbar = (props) => {
+const Navbar = (props) => {
+
+    const [state, toggleLoginDisplay] = useState({
+        showLogin: false,
+    })
+
+    const showLoginHandler = () => {
+        toggleLoginDisplay((prevState => ({
+            ...prevState,
+            showLogin: !state.showLogin,
+        })))
+    }
+
+    const logAndHideHandler = () => {
+        props.onLogin()
+        toggleLoginDisplay((prevState => ({
+            ...prevState,
+            showLogin: !state.showLogin,
+        })))
+    }
 
     const loggedPanel  = 
         <div className="RightPanel">
@@ -13,10 +34,10 @@ const navbar = (props) => {
             <Navitem clicked={props.onLogout} pathTo='/'>Odhlásit</Navitem>
         </div>;
    
-
+    //props.onLogin
     const unloggedPanel  = 
         <div className="RightPanel">
-            <Navitem clicked={props.onLogin}>Přihlášení</Navitem>
+            <Navitem clicked={showLoginHandler}>Přihlášení</Navitem>
             <Navitem>Registrace</Navitem>
         </div>;
 
@@ -32,6 +53,7 @@ const navbar = (props) => {
                 {/* <Navitem pathTo='/pricing'>Ceník</Navitem> */}
                 <Navitem pathTo='/contact'>Kontakt</Navitem>
             </div>
+            <Modal show={state.showLogin} toggler={showLoginHandler} login={logAndHideHandler}/>
             
             {props.lgn
             ? loggedPanel
@@ -63,4 +85,4 @@ const mapDispatchToProps = dispatch => {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
