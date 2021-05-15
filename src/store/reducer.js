@@ -12,6 +12,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 logged: !state.logged,
             }
+        // no default
     }
 
     switch(action.type) {
@@ -20,6 +21,7 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 showModal: !state.showModal,
             }
+        // no default
     }
 
     return state;
