@@ -1,9 +1,9 @@
 .Footer {
   position: absolute;
   height: 180px;
-  width: 100%;
+  width: 100vw;
   background-color: snow;
-  margin-top: 50%;
+  margin-top: 900px;
   border-top: 3px solid cornflowerblue;
   color: #00957d;
   text-align: center;
