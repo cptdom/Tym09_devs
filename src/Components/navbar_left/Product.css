@@ -1,32 +1,89 @@
 .Product {
     position: absolute;
-    margin-top: 30vh;
+    margin-top: 14vh;
     margin-left: 10vw;
     width: 550px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    
+    z-index: -1;
 }
 
-.Product h2 {
-    font-size: 32px;
-    font-weight: 700;
+.UpperSlider, .MiddleSlider, .BottomSlider {
+    width: 600px;
+    margin-bottom: 20px;
+    height: 150px;
+    background-color: snow;
+    color: rgb(68, 68, 68);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.UpperSlider, .BottomSlider {
     animation-duration: 2.5s;
-    animation-name: slidein_fromleft;
+    animation-name: slidein_right;
 }
 
+.MiddleSlider {
+    animation-duration: 2.5s;
+    animation-name: slidein_left;
+}
+
+.Product h3 {
+    margin-left: 30px;
+}
 .Product p {
-    font-size: 24px;
-    font-weight: 400;
-    animation-duration: 2.5s;
-    animation-name: slidein_fromright;
+    width: 350px;
+    margin-left: 20px;
 }
 
-@keyframes slidein_fromleft {
+.Image0, .Image2 {
+    position: absolute;
+    border-radius: 15px;
+    width:130px;
+    height: 130px;
+    margin-top: 9px;
+    margin-left: 440px;
+}
+
+.Image1 {
+    position: absolute;
+    border-radius: 15px;
+    width:130px;
+    height: 130px;
+    margin-top: 9px;
+    margin-left: 25px;
+}
+
+.Card {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    margin-left: 180px;
+}
+
+.Image0 {
+    background-image: url("../../static/adjust.png");
+    background-size: 100%;
+}
+
+.Image1 {
+    background-image: url("../../static/email.png");
+    background-size: 100%;
+}
+
+.Image2 {
+    background-image: url("../../static/report.png");
+    background-size: 100%;
+}
+
+
+
+@keyframes slidein_left {
     from {
-        margin-left: 2vw;
+        margin-left: 5vw;
     }
 
     to {
@@ -34,9 +91,9 @@
     }
 }
 
-@keyframes slidein_fromright {
+@keyframes slidein_right {
     from {
-        margin-left: -2vw;
+        margin-left: -5vw;
     }
 
     to {

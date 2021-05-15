@@ -3,29 +3,14 @@ import Navitem from './Navitem';
 import './Navbar.css';
 import {NavLink} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {useState} from 'react';
 import Modal from '../Components/modal/modal';
 
 
 const Navbar = (props) => {
 
-    const [state, toggleLoginDisplay] = useState({
-        showLogin: false,
-    })
-
-    const showLoginHandler = () => {
-        toggleLoginDisplay((prevState => ({
-            ...prevState,
-            showLogin: !state.showLogin,
-        })))
-    }
-
     const logAndHideHandler = () => {
         props.onLogin()
-        toggleLoginDisplay((prevState => ({
-            ...prevState,
-            showLogin: !state.showLogin,
-        })))
+        props.onToggleModal()
     }
 
     const loggedPanel  = 
@@ -37,7 +22,7 @@ const Navbar = (props) => {
     //props.onLogin
     const unloggedPanel  = 
         <div className="RightPanel">
-            <Navitem clicked={showLoginHandler}>Přihlášení</Navitem>
+            <Navitem clicked={props.onToggleModal}>Přihlášení</Navitem>
             <Navitem>Registrace</Navitem>
         </div>;
 
@@ -53,17 +38,11 @@ const Navbar = (props) => {
                 {/* <Navitem pathTo='/pricing'>Ceník</Navitem> */}
                 <Navitem pathTo='/contact'>Kontakt</Navitem>
             </div>
-            <Modal show={state.showLogin} toggler={showLoginHandler} login={logAndHideHandler}/>
+            <Modal show={props.mdl} toggler={props.onToggleModal} login={logAndHideHandler}/>
             
             {props.lgn
             ? loggedPanel
             : unloggedPanel}
-
-
-            {/* <div className="RightPanel">
-                <Navitem>Přihlášení</Navitem>
-                <Navitem>Registrace</Navitem>
-            </div> */}
             
         </div>
     )
@@ -73,7 +52,8 @@ const Navbar = (props) => {
 
 const mapStateToProps = state => {
     return {
-        lgn: state.logged
+        lgn: state.logged,
+        mdl: state.showModal,
     }
 }
 
@@ -81,6 +61,7 @@ const mapDispatchToProps = dispatch => {
     return {
         onLogin: () => dispatch({type: 'SWITCH_LOGIN_STATUS'}) && window.alert("Úspěšně jste se přihlásil/a"),
         onLogout: () => window.confirm("Opravdu se chcete odhlásit?") && dispatch({type: 'SWITCH_LOGIN_STATUS'}),
+        onToggleModal: () => dispatch({type: 'SWITCH_LOGIN_MODAL'}),
     }
 }
 

@@ -1,5 +1,6 @@
 const initialState = {
     logged: false,
+    showModal: false,
 }
 
 
@@ -10,6 +11,14 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 logged: !state.logged,
+            }
+    }
+
+    switch(action.type) {
+        case "SWITCH_LOGIN_MODAL":
+            return {
+                ...state,
+                showModal: !state.showModal,
             }
     }
 
