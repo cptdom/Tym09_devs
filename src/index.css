@@ -1,6 +1,9 @@
 body {
   margin: 0;
+  position: absolute;
   padding: 0;
   min-width: 1024px;
+  min-height: 100%;
   font-family: 'Montserrat', sans-serif;
+  
 }

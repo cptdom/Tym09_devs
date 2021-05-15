@@ -7,6 +7,7 @@ import About from './Components/navbar_left/About';
 import Contact from './Components/navbar_left/Contact';
 import Product from './Components/navbar_left/Product';
 import Profile from './Components/profil/profil';
+import Footer from './Layout/Footer/Footer';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/contact" component={Contact}></Route>
           <Route path="/" component={Intro}></Route>
         </Switch>
+        <Footer/>
       </Layout>
   );
 }

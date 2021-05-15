@@ -1,0 +1,30 @@
+.Footer {
+  position: absolute;
+  height: 180px;
+  width: 100%;
+  background-color: snow;
+  margin-top: 50%;
+  border-top: 3px solid cornflowerblue;
+  color: #00957d;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+    
+  }
+
+.Fis {
+  margin-left: 10px;
+}
+
+.Footer h1 {
+  font-weight: 600;
+  font-size: 48px;
+  margin-left: 37vw;
+  width: 320px;
+  padding-right: 10px;
+}
+
+.Footer p {
+  margin-top: 80px;
+  margin-left: 3vw;
+}
