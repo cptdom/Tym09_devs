@@ -5,7 +5,7 @@ import "./map.css";
 
 const mapElement = (props) => {
 
-    const districtData = require('../../static/prague_districts_truncated.json')
+    const districtData = require('../../static/prague_districts_10_truncated.json')
     const fillBlueOptions = { fillColor: 'blue' }
     const center = [50.093245754000066, 14.427845018000048]
 

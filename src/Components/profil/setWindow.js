@@ -6,7 +6,7 @@ import './setWindow.css';
 
 const SetWindow = (props) => {
 
-    const districtSelectionArray = ["Praha 1", "Praha 2", "Praha 3", "Praha 4", "Praha 5"]
+    const districtSelectionArray = ["Praha 1", "Praha 2", "Praha 3", "Praha 4", "Praha 5", "Praha 6", "Praha 7", "Praha 8", "Praha 9", "Praha 10"]
     //TODO: pozor, data v JSON jsou momentalne jen po Prahu 5
     const proportionsArray = ["1+kk","1+1","2+kk","2+1","3+kk","3+1"]
     const scheduleOptionsArray = {1: "1x denně"}
