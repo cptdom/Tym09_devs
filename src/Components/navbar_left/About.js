@@ -4,6 +4,7 @@ import './About.css'
 const about = (props) => {
     return (
         <div className="About">
+            <div className="Hedr">Tým RealQuik</div>
             <a href="https://www.linkedin.com/in/dominik-hartinger-b88879201/" target="_blank" rel="noreferrer"><div className="Thumb1">
                     <div className="Headshot" id="Dominik"></div>
                     <h3>Dominik</h3>
