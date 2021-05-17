@@ -55,18 +55,26 @@ def set_comma_to_dot(row):
         row = row.replace(',', '.')
     return row
 
-
+# sets string to lower (if its a string) and strips off whitespace
 def set_lower_and_strip(row):
     if isinstance(row, str):
         row = row.strip().lower()
     return row
 
+# fills NaNs with False, sets string to lower (if its a string)
 def lower_and_numerize(df, column):
     df[column] = df[column].fillna(False)
     df[column] = df[column].apply(lambda x: x.lower() if isinstance(x, str) else x)
 
+# returns: False if string is "ne"; bool if its already bool; True if its any string other than "ne" 
+# (e.g. size of balcony means there is balcony)
 def booleanize_column(df, column):
     df[column] = df[column].apply(lambda x: x if isinstance(x, bool) else False if x == 'ne' else True)
+
+# drops any flat with unpaid anuity mention
+def drop_anuity(df):
+    return df.loc[~df['description'].str.contains('nesplacen[áoué ]+anuit', regex = True), :]
+
 
 def prepare_data(default_args):
     print('PREPARING DATA...')
@@ -96,6 +104,10 @@ def prepare_data(default_args):
     df['rooms'] = df['size'].apply(get_number_of_rooms)
     df['kitchen'] = df['size'].apply(lambda x: False if 'kk' in str(x) else True)
     
+    # drop columns with unpaid anuity
+    df = drop_anuity(df)
+    
+    # drop unneeded cols    
     df = df.drop(columns=COLS_TO_DROP)
     
     # rename categories, lower etc.
@@ -139,17 +151,19 @@ def prepare_data(default_args):
     # convert True/False to 1/0
     df['price'] = df['price'].apply(set_comma_to_dot)
     
+    # replace "null" as NaN
     df = df.replace('null', np.nan, regex=True)
     
+    # lower strings, replace with bools, turn bool into 1/0
     for column in ['balcony', 'basement', 'elevator', 'terrace', 'loggia', 'garage']:
         booleanize_column(df, column)
         df[column] = df[column].astype(np.float32)
-        
+    
+    # turn cols to floats
     for column in ['floor', 'rooms', 'kitchen', 'price']:
         df[column] = df[column].astype(np.float32)
     
-    
-    # remove flats more expensive than 30 mil
+    # remove flats more expensive than 30 mil and cheaper than 1 mil
     df = df[df['price'].lt(30_000_000) & df['price'].gt(1_000_000)]
     
     # some area wrongly empty string value
@@ -186,17 +200,23 @@ def prepare_data(default_args):
                         'city_part',
                         'equipment']
     
+    # target encoding
     encoder = ce.TargetEncoder(return_df=True, cols=categorical_cols, verbose=1, min_samples_leaf=10)
     categorical_imputer = SimpleImputer(strategy='most_frequent')
     
+    # drop city part only to add it later
     df_city_part = df.pop('city_part_number')
+    
+    # features and target split
     y = df.pop('price').astype(float)
     X = df
     
+    # encode - categorical, numerical, target
     X = encoder.fit_transform(X, y)
     X[categorical_cols] = categorical_imputer.fit_transform(X[categorical_cols])
     X[numerical_cols] = numeric_imputer.fit_transform(X[numerical_cols])
     
+    # create processed dataframe
     processed_dataset = pd.DataFrame(X, columns=list(df.columns), index=df.index)
     processed_dataset['price'] = y.values
     processed_dataset['district'] = df_city_part
