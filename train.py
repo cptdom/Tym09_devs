@@ -10,6 +10,8 @@ import pandas as pd
 
 df = pd.read_csv('processed_dataset.csv', index_col = 0)
 
+df = df.drop(columns = 'district')
+
 df_to_split = df.copy()
 
 df_1 = ('small', df_to_split[df_to_split['rooms'] == 1])
@@ -124,5 +126,29 @@ SAVE_MODEL_DICT = True
 if SAVE_MODEL_DICT:
     
     import pickle
-    with open('all_models_dict_v2.pickle', 'wb') as handle:
+    with open('all_models_dict_v3.pickle', 'wb') as handle:
         pickle.dump(model_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def get_feature_importances(model_dict):
+    
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    feature_importances = np.zeros((3, X.shape[1] - 1))
+    
+    for i, size in enumerate(model_dict.keys()):
+        feature_importances[i] = np.mean([tree.feature_importances_ for tree in model_dict[size]['BaggingRegressor'].estimators_], axis=0)
+
+    feature_importances = np.mean(feature_importances, axis=0)
+        
+    feature_names = list(X.columns)[:-1]
+    features = pd.DataFrame(np.array((feature_names, feature_importances)).T, columns = ['feature_name', 'feature_importance'])
+    features['feature_importance'] = features['feature_importance'].astype(float)
+    features = features.sort_values('feature_importance', ascending = False)
+    fig, ax = plt.subplots(figsize=(35, 50))
+    
+    sns.barplot(x = 'feature_importance', y = 'feature_name', data = features, ax = ax)
+    plt.tight_layout()
+    plt.title('Feature importance', fontsize = 25)
+    plt.show()
+
