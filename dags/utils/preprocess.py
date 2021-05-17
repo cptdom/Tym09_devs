@@ -3,6 +3,8 @@ import numpy as np
 from airflow.providers.mongo.hooks.mongo import MongoHook
 from sklearn.impute import SimpleImputer
 import category_encoders as ce
+import re 
+import unicodedata
 
 COLS_TO_DROP = ['floor_area',
                 'floor_max',
@@ -19,13 +21,11 @@ COLS_TO_DROP = ['floor_area',
 ### helper functions
 # normalize unicode characters
 def normalize_unicode(row):
-    import unicodedata
     return unicodedata.normalize('NFKD', row)
 
 
 # ziskej část prahy (1, 12, 20, 4...)
 def get_prague_part_number(row):
-    import re
     prague = re.search(r'(Praha)(\s)()(\d*)', row)
     if prague is not None:
         prague = prague.group(0)
@@ -44,7 +44,6 @@ def get_number_of_rooms(row):
 
 # get floor number
 def get_floor_number(row):
-    import re
     floor = re.search(r'([-\d]+)', str(row))
     if floor is not None:
         floor = floor[0]
