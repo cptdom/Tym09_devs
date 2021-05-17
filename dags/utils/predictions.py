@@ -2,7 +2,6 @@ import json
 import pickle
 import pandas as pd
 import numpy as np
-import argparse
 import re
 
 from airflow.providers.mongo.hooks.mongo import MongoHook
@@ -129,7 +128,7 @@ def filter_underpriced_flats(df, model_dict):
     return underpriced_df
 
 
-def generate_recommendations_for_each_tracker(dataset, request, model_dict, number_of_flats=10):
+def generate_recommendations_for_each_tracker(dataset, request, model_dict, number_of_flats=5):
     '''
     generates recommendations for each tracker id based on conditions set in that tracker
     
