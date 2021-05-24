@@ -121,7 +121,7 @@ const SetWindow = (props) => {
             <form action="">
                 <label>
                     E-mail:  
-                    <input className="Immutable" type="text" value={state.email}/>
+                    <input id="email" className={state.email} type="email" value="@" onChange={changeHandler}/>
                 </label>
             </form>
             <button className="Launch" onClick={sendDataHandler}>Odeslat</button>

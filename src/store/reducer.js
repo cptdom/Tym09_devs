@@ -1,6 +1,7 @@
 const initialState = {
     logged: false,
     showModal: false,
+    username: "testuser",
 }
 
 

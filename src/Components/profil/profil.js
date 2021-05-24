@@ -63,6 +63,7 @@ const Profil = (props) => {
 
     const content = 
         <div className="Profil">
+            <div className="UserLog">{loginState.username}</div>
             <Trackers passed={showTrackerHandler}/>
             <button className="Addnew" onClick={newTrackerHandler}>Přidat nový</button>
             <div className="OutputFrame">
