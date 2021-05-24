@@ -1,8 +1,9 @@
 const express = require('express')
 const app = express();
-
+const port = process.env.PORT || 3001
 const cors = require('cors')
 const mongoose = require('mongoose')
+const path = require("path")
 
 
 app.use('*', cors())
@@ -15,9 +16,19 @@ mongoose.connect("mongodb+srv://admin_domik:tym09ftw@cluster0.mtfak.mongodb.net/
     useUnifiedTopology: true,
 })
 
-app.use("/", require("./routes/trackerRoute"))
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static('build'), require("./routes/trackerRoute"))
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+    })
+}
+else {
+    app.use("/", require("./routes/trackerRoute"))
+}
 
 
-app.listen(3001, () => {
-    console.log("The Express server is running on localhost:3001")
+
+
+app.listen(port, () => {
+    console.log(`The Express server is running on localhost:${port}`)
 })
