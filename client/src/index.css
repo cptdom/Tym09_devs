@@ -3,6 +3,7 @@ body {
   position: relative;
   padding: 0;
   min-width: 1024px;
+  max-width: 1920px;
   min-height: 100%;
   font-family: 'Montserrat', sans-serif;
   height: 100%;
