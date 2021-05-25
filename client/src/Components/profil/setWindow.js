@@ -50,7 +50,7 @@ const SetWindow = (props) => {
         }
 
         window.confirm(`Opravdu chcete odeslat tracker ${toPush.name}?`)
-        && axios.post('http://localhost:3001/create', toPush)
+        && axios.post('/create', toPush)
         .then( response => {
             console.log("Data sent successfully")
             console.log(`Status code: ${response.statusText}`)

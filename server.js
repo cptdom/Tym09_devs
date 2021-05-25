@@ -22,8 +22,8 @@ mongoose.connection.on('connected', () => {
 })
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(router)
     app.use(express.static('client/build'))
+    app.use(router)
     app.get("*", (req, res) => {
         res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
     })
