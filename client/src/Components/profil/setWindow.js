@@ -15,7 +15,7 @@ const SetWindow = (props) => {
 
     const [state, changeState] = useState({
         "name": "Můj tracker",
-        "email": "dummy@dummy.com",
+        "email": "@",
         "city": "Praha",
         "district": districtSelectionArray[0],
         "propLow": proportionsArray[0],
@@ -121,7 +121,7 @@ const SetWindow = (props) => {
             <form action="">
                 <label>
                     E-mail:  
-                    <input id="email" className={state.email} type="email" value="@" onChange={changeHandler}/>
+                    <input id="email" className={state.email} type="email" value={state.email} onChange={changeHandler}/>
                 </label>
             </form>
             <button className="Launch" onClick={sendDataHandler}>Odeslat</button>
