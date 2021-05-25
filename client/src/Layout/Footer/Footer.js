@@ -9,8 +9,8 @@ const footer = (props) => {
     return (
         <div className="Footer">
             <img className="Fis"src={logo} alt={placeholder} />
-            <p>Tato aplikace byla vytvořena v rámci studentského projektu</p>
-            <h1>4IT500 Team 09</h1>
+            <div className="Ann">Tato aplikace byla vytvořena v rámci studentského projektu</div>
+            <div className="TymTag">4IT500 Team 09</div>
         </div>
     )
 }

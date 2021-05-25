@@ -16,15 +16,20 @@
   margin-left: 10px;
 }
 
-.Footer h1 {
+.TymTag {
+  position: absolute;
   font-weight: 600;
   font-size: 48px;
-  margin-left: 37vw;
+  margin-left: 70%;
   width: 320px;
+  min-width: 320px;
   margin-right: 20px;
+  margin-top: 35px;
 }
 
-.Footer p {
-  margin-top: 80px;
+.Ann {
+  margin-top: 65px;
   margin-left: 3vw;
+  width: 230px;
+  min-width: 230px;
 }
