@@ -11,10 +11,14 @@ app.use('*', cors())
 app.use(express.json())
 
 
-mongoose.connect("mongodb+srv://admin_domik:tym09ftw@cluster0.mtfak.mongodb.net/user_requests?retryWrites=true&w=majority",
+mongoose.connect(process.env.MONGODB_URI || "mongodb+srv://admin_domik:tym09ftw@cluster0.mtfak.mongodb.net/user_requests?retryWrites=true&w=majority",
  {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+})
+
+mongoose.connection.on('connected', () => {
+    console.log("mongoose connected successfully.")
 })
 
 if (process.env.NODE_ENV === 'production') {
