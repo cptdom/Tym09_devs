@@ -4,6 +4,7 @@ const port = process.env.PORT || 3001
 const cors = require('cors')
 const mongoose = require('mongoose')
 const path = require("path")
+const router = require("./routes/trackerRoute")
 
 
 app.use('*', cors())
@@ -17,7 +18,8 @@ mongoose.connect("mongodb+srv://admin_domik:tym09ftw@cluster0.mtfak.mongodb.net/
 })
 
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static('build'), require("./routes/trackerRoute"))
+    app.use(router)
+    app.use(express.static('client/build'))
     app.get("*", (req, res) => {
         res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
     })
