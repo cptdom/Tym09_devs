@@ -1,8 +1,18 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import "./Product.css";
+import Store from '../../store/store';
+import {useHistory} from 'react-router-dom';
 
 const Product = (props) => {
+
+    let reduxState = Store.getState()
+    
+    const history = useHistory()
+
+    const toProfileHandler = () => history.push('/profile')
+
+
     return (
         <div className="Product">
             <div className="UpperSlider">
@@ -22,7 +32,7 @@ const Product = (props) => {
                 <p>Získáte přístup ke <b>sjednocenému přehledu</b> o dostupných nemovitostech na námi sledovaných trzích.</p>
                 <div className="Image2"/>
             </div>
-            <div className="More2" onClick={props.onInterested}><h2>Chci to zkusit</h2></div>
+            <div className="More2" onClick={reduxState.logged ? toProfileHandler : props.onInterested}><h2>Chci to zkusit</h2></div>
         </div>
     )
 }
