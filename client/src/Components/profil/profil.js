@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './profil.css';
 import Store from '../../store/store';
-import { Redirect } from 'react-router-dom';
+import { Redirect, NavLink } from 'react-router-dom';
 import Trackers from './trackers';
 import SetWindow from './setWindow';
 import TrackerReview from './trackerReview';
@@ -63,7 +63,8 @@ const Profil = (props) => {
 
     const content = 
         <div className="Profil">
-            <div className="UserLog">{loginState.username}</div>
+            <NavLink to='/profile'><div className="UserLog">{loginState.username}</div></NavLink>
+            <NavLink to='/profile/dashboard'><div className="ToDashboard">Přehled trhu</div></NavLink>
             <Trackers passed={showTrackerHandler}/>
             <button className="Addnew" onClick={newTrackerHandler}>Přidat nový</button>
             <div className="OutputFrame">

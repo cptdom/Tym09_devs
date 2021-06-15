@@ -1,23 +1,33 @@
-.Profil {
+.DashboardBackground {
     position: absolute;
-    width: 1200px;
+    width: 1206px;
     height: 700px;
     background-color: rgba(255, 250, 250, 0.9);
     margin-top: 10vh;
-    vertical-align: middle;
     margin: 5vw;
     color: black;
     border-radius: 15px;
     margin-bottom: 20vh;
     border: 2px solid #cecece;
+    display: block;
+    flex-direction: column;
+    text-align: center;
     padding-left: 7px;
     
 }
 
-.Profil h2 {
-    color: cornflowerblue;
+.DashboardBackground::-webkit-scrollbar {
+    width: 3px;
+    background-color: snow;
+  }
+
+.DashboardBackground::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
+.DashboardBackground::-webkit-scrollbar-thumb {
+    background-color: cornflowerblue;
+  }
 
 .UserLog {
     position: absolute;
@@ -39,14 +49,14 @@
     margin-top: -8vh;
     margin-left: 200px;
     height: 32px;
-    background-color: rgb(251, 248, 201);
+    background-color: rgb(251, 229, 201);
     border-radius: 8px;
     padding: 5px;
     transition: 0.3s all;
 
 }
 
-.ToDashboard:active {
+.ToDashboard:active, .UserLog:active {
     background-color: snow;
     color: black;
 }
@@ -57,37 +67,6 @@
     background-color: rgb(56, 83, 133);
 }
 
-.Addnew {
-    position: absolute;
-    font-size: 20px;
-    background-color: cornflowerblue;
-    margin-left: 38px;
-    margin-top: 635px;
-    width: 150px;
-    height: 35px;
-    color: snow;
-    border-radius: 5px;
-    transition: 0.3s all;
-    border: none;
-    
-}
-
-.Addnew:active {
-    background-color: snow;
-    color: black;
-}
-
-.Addnew:hover {
-    cursor: pointer;
-    background-color: rgb(56, 83, 133);
-}
-
-.Placeholder {
-    position: absolute;
-    margin-left: 410px;
-    margin-top: 300px;
-    font-weight: 600;
-    font-size: 24px;
-    color: cornflowerblue;
-    text-align: center;
+.DashboardBackground:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
 }

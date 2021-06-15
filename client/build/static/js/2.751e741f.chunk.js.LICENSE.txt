@@ -9,6 +9,18 @@ object-assign
  * (c) 2010-2019 Vladimir Agafonkin, (c) 2010-2011 CloudMade
  */
 
+/*! API */
+
+/*! BEGIN ApiShared */
+
+/*! BEGIN CoreSlim */
+
+/*! BEGIN MscorlibSlim */
+
+/*! tableau-2.1.2 */
+
+/*! tableau-2.2.1 */
+
 /** @license React v0.20.2
  * scheduler.production.min.js
  *

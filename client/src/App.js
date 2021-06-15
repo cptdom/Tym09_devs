@@ -8,6 +8,7 @@ import Contact from './Components/navbar_left/Contact';
 import Product from './Components/navbar_left/Product';
 import Profile from './Components/profil/profil';
 import Footer from './Layout/Footer/Footer';
+import Dashboard from './Components/profil/dashboard';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   return (
       <Layout>
         <Switch>
+        <Route path="/profile/dashboard" component={Dashboard}></Route>
           <Route path="/profile" component={Profile}></Route>
           <Route path="/product" component={Product}></Route>
           <Route path="/about" component={About}></Route>

@@ -32,7 +32,7 @@ const about = (props) => {
                     <h3>Michal</h3>
                     <p className="Pos">COO</p>
                     <p>Data Engineer</p>
-                    <p>týmový Slovák</p>
+                    <p>Týmový Slovák</p>
                 </div>
             </a>
             <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZJpNtlUZatZVTHpAJRB8Wsu_tGjmPe15Hg&usqp=CAU" target="_blank" rel="noreferrer"><div className="Thumb5">
